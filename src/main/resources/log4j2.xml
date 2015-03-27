@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+    <Properties>
+        <Property name="filename">logs/bam$${sd:type}.log</Property>
+        <Property name="myPattern">%d{yyyy-MM-dd HH:mm:ss:SSS}:[%-5p]:[%t] (%F:%L) - %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="${myPattern}"/>
+        </Console>
+
+        <File name="File" fileName="${filename}">
+            <PatternLayout pattern="${myPattern}"/>
+        </File>
+
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

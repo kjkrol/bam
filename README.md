@@ -16,8 +16,7 @@ There is an option to build executable jar file with dependencies:
 ```mvn clean compile assembly:single```  
 To run sample app type:
 ```java -jar target/bam-1.0.0-jar-with-dependencies.jar```
-**!!! Current version works only on Mac OSX !!!**
 
 ## References
-1. LWJGL - https://github.com/LWJGL/lwjgl3
+1. LWJGL https://github.com/LWJGL/lwjgl3
 2. JBox2d https://github.com/jbox2d/jbox2d

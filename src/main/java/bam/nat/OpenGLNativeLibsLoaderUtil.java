@@ -11,17 +11,17 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Allows loading libraries included in jar file.
+ * Loads native OpenGL libraries included in jar file.
  *
  * @author Karol Krol
  * @since 1.0.0
  */
-public final class NativeOpenGlLibsLoaderUtil {
+public final class OpenGLNativeLibsLoaderUtil {
 
     /**
      * Class logger
      */
-    public static final Logger LOGGER = LoggerFactory.getLogger(NativeOpenGlLibsLoaderUtil.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(OpenGLNativeLibsLoaderUtil.class);
 
     /**
      * OS name system property name
@@ -56,8 +56,8 @@ public final class NativeOpenGlLibsLoaderUtil {
     /**
      * 64 bits Architecture type
      */
-    private static final String AMD64 = "amd64";
-    private static final String IA64 = "ia64";
+    private static final String X86 = "x86";
+    private static final String I386 = "i386";
 
     /**
      * Name of the directory containing libraries for supported OSs and archs
@@ -79,7 +79,7 @@ public final class NativeOpenGlLibsLoaderUtil {
     /**
      * Hidden constructor.
      */
-    private NativeOpenGlLibsLoaderUtil() {
+    private OpenGLNativeLibsLoaderUtil() {
     }
 
     /**
@@ -92,9 +92,24 @@ public final class NativeOpenGlLibsLoaderUtil {
         String subDir = null;
 
         final String osName = System.getProperty(OS_NAME).toLowerCase();
+        final String osArch = System.getProperty(OS_ARCH);
         if (osName.startsWith(MAC)) {
             libsNames = new String[]{"libjinput-osx.dylib", "liblwjgl.dylib", "openal.dylib"};
             subDir = MACOSX_DIR;
+        } else if (osName.startsWith(WIN)) {
+            if (osArch.equalsIgnoreCase(X86)) {
+                libsNames = new String[]{"jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll"};
+            } else {
+                libsNames = new String[]{"jinput-dx8_64.dll", "jinput-raw_64.dll", "lwjgl64.dll", "OpenAL64.dll"};
+            }
+            subDir = WINDOWS_DIR;
+        } else if (osName.startsWith(LINUX)) {
+            if (osArch.equalsIgnoreCase(I386)) {
+                libsNames = new String[]{"libjinput-linux.so", "liblwjgl.so", "libopenal.so"};
+            } else {
+                libsNames = new String[]{"libjinput-linux64.so", "liblwjgl64.so", "libopenal64.so"};
+            }
+            subDir = LINUX_DIR;
         }
         unpackLibs(libsNames, subDir, tmpDir);
         addLibsToJavaLibraryPath(tmpDir.getAbsolutePath());
@@ -164,7 +179,7 @@ public final class NativeOpenGlLibsLoaderUtil {
      */
     private static InputStream getInputStreamToFile(final String subDir, final String libraryName) {
         final String path = ROOT_LIB_DIR + subDir + libraryName;
-        return NativeOpenGlLibsLoaderUtil.class.getClassLoader().getResourceAsStream(path);
+        return OpenGLNativeLibsLoaderUtil.class.getClassLoader().getResourceAsStream(path);
     }
 
     /**

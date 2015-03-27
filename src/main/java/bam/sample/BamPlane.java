@@ -60,6 +60,14 @@ public class BamPlane extends AbstractBamPlane {
     }
 
     @Override
+    protected World initWorld() {
+        final Vec2 gravity = new Vec2(0.0f, -30.0f);
+        final World world = new World(gravity);
+        world.setAllowSleep(true);
+        return world;
+    }
+
+    @Override
     public void control(int delta) {
 
         float xVel = 0.0f;
@@ -82,7 +90,7 @@ public class BamPlane extends AbstractBamPlane {
     }
 
     private Box createBox(final Vec2 position, final float width, final float height, final BodyType bodyType,
-                         final FixtureDef templateFixture, final Texture texture) {
+                          final FixtureDef templateFixture, final Texture texture) {
         final PolygonShape boxShape = new PolygonShape();
         boxShape.setAsBox(width, height);
         final Body body = this.physicalBodyFactory.createBody(position, boxShape, bodyType, templateFixture);

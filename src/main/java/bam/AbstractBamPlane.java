@@ -1,6 +1,6 @@
 package bam;
 
-import bam.nat.NativeOpenGlLibsLoaderUtil;
+import bam.nat.OpenGLNativeLibsLoaderUtil;
 import bam.objects.AbstractBamObject;
 import lombok.Data;
 import org.jbox2d.common.Vec2;
@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class AbstractBamPlane {
 
     static {
-        NativeOpenGlLibsLoaderUtil.loadLibs();
+        OpenGLNativeLibsLoaderUtil.loadLibs();
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBamPlane.class);
@@ -48,56 +48,16 @@ public abstract class AbstractBamPlane {
     public AbstractBamPlane() {
         this.bamObjects = new ArrayList<>();
         this.stopWatch = new StopWatch();
-        final Vec2 gravity = new Vec2(0.0f, -10.0f);
-        this.world = new World(gravity);
-        this.world.setAllowSleep(true);
+        this.world = this.initWorld();
         this.physicalBodyFactory = new PhysicalBodyFactory(this.world);
+        this.initGL();
+        this.initPlane();
     }
 
     /**
      *
      */
     public void start() {
-        try {
-            this.initGL();
-            this.initPlane();
-            this.loop();
-        } catch (LWJGLException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-    }
-
-    /**
-     *
-     * @throws LWJGLException
-     */
-    protected void initGL() throws LWJGLException {
-        final DisplayMode mode = GLUtil.getDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT);
-        Display.setDisplayMode(mode);
-        Display.setFullscreen(false);
-        Display.setTitle(TITLE);
-        Display.create();
-
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glShadeModel(GL11.GL_SMOOTH);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL11.GL_LIGHTING);
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1, -1);
-
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glLoadIdentity();
-    }
-
-    /**
-     *
-     */
-    protected void loop() {
         this.getStopWatch().getDelta();
         while (!Display.isCloseRequested()) {
             int delta = this.getStopWatch().getDelta();
@@ -118,8 +78,41 @@ public abstract class AbstractBamPlane {
         Display.destroy();
     }
 
+    protected abstract World initWorld();
+
     protected abstract void control(int delta);
 
     protected abstract void initPlane();
+
+    /**
+     * @throws LWJGLException
+     */
+    protected void initGL() {
+        try {
+            final DisplayMode mode = GLUtil.getDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT);
+            Display.setDisplayMode(mode);
+            Display.setFullscreen(false);
+            Display.setTitle(TITLE);
+            Display.create();
+
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glShadeModel(GL11.GL_SMOOTH);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_LIGHTING);
+
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+            GL11.glMatrixMode(GL11.GL_PROJECTION);
+            GL11.glLoadIdentity();
+            GL11.glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1, -1);
+
+            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+            GL11.glLoadIdentity();
+        } catch (LWJGLException e) {
+            LOGGER.error(e.getMessage(), e);
+            System.exit(0);
+        }
+    }
 
 }

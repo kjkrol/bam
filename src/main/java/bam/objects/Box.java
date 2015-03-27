@@ -24,7 +24,7 @@ public class Box extends AbstractBamObject {
         GL11.glLoadIdentity();
         GL11.glTranslatef(getXPos(), getYPos(), 0);
 
-        float angle = (float) (body.getAngle() * 180 / Math.PI);
+        float angle = (float) (body.getAngle() * 180 / Math.PI) - 90.0f;
         GL11.glRotatef(angle, 0f, 0f, 1f);
 
         GL11.glBegin(GL11.GL_QUADS);

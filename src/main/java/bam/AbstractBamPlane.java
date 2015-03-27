@@ -3,7 +3,6 @@ package bam;
 import bam.nat.OpenGLNativeLibsLoaderUtil;
 import bam.objects.AbstractBamObject;
 import lombok.Data;
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -33,9 +32,10 @@ public abstract class AbstractBamPlane {
     protected static final int WINDOW_WIDTH = 640;
     protected static final int WINDOW_HEIGHT = 480;
 
-    protected static final float TIME_STEP = 1.0f / 60.f;
-    protected static final int VELOCITY_ITERATIONS = 20;
-    protected static final int POSITION_ITERATIONS = 20;
+
+    protected static final int FPS_LIMIT = 60;
+    protected static final int VELOCITY_ITERATIONS = 6;
+    protected static final int POSITION_ITERATIONS = 2;
 
     protected final List<AbstractBamObject> bamObjects;
 
@@ -58,11 +58,13 @@ public abstract class AbstractBamPlane {
      *
      */
     public void start() {
+
         this.getStopWatch().getDelta();
         while (!Display.isCloseRequested()) {
-            int delta = this.getStopWatch().getDelta();
-            this.getWorld().step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-            this.control(delta);
+            final int delta = this.getStopWatch().getDelta();
+            final float freq = delta / 1000.0f;
+            this.getWorld().step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            this.control(freq);
 
             /* Clear The Screen And The Depth Buffer */
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -72,15 +74,15 @@ public abstract class AbstractBamPlane {
             GL11.glPopMatrix();
             GL11.glFlush();
 
+            Display.sync(FPS_LIMIT);
             Display.update();
-            Display.sync(60); // cap fps to 60fps
         }
         Display.destroy();
     }
 
     protected abstract World initWorld();
 
-    protected abstract void control(int delta);
+    protected abstract void control(float freq);
 
     protected abstract void initPlane();
 

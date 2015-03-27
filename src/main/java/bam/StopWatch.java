@@ -9,9 +9,6 @@ import org.lwjgl.Sys;
  */
 public class StopWatch {
 
-
-    private static final int ONE_MINUTE_IN_MS = 1000;
-
     /**
      * time at last frame
      */
@@ -24,18 +21,10 @@ public class StopWatch {
      * @return milliseconds passed since last frame
      */
     public int getDelta() {
-        final long time = getTime();
-        int delta = (int) (time - lastMeasurement);
-        lastMeasurement = time;
+        final long time = System.currentTimeMillis();
+        final int delta = (int) (time - this.lastMeasurement);
+        this.lastMeasurement = time;
         return delta;
     }
 
-    /**
-     * Get the accurate system time
-     *
-     * @return The system time in milliseconds
-     */
-    private long getTime() {
-        return (Sys.getTime() * ONE_MINUTE_IN_MS) / Sys.getTimerResolution();
-    }
 }

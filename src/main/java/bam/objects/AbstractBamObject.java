@@ -14,12 +14,12 @@ import org.newdawn.slick.opengl.Texture;
 public abstract class AbstractBamObject {
 
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
-    public static final int SIZE = 20;
+    public static final int SIZE = 30;
 
     static {
         DEFAULT_FIXTURE_DEF.density = 1.0f;
         DEFAULT_FIXTURE_DEF.friction = 1.0f;
-        DEFAULT_FIXTURE_DEF.restitution = 1.0f;
+        DEFAULT_FIXTURE_DEF.restitution = 0.5f;
     }
 
     protected final Body body;

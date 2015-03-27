@@ -53,39 +53,44 @@ public class BamPlane extends AbstractBamPlane {
         final Box box0 = this.createBox(new Vec2(100f, 400f), Box.SIZE, Box.SIZE, BodyType.DYNAMIC, fixtureDef, boxTexture);
         this.bamObjects.add(box0);
 
-        final Box box1 = this.createBox(new Vec2(200f, 400f), Box.SIZE, Box.SIZE, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
-        this.bamObjects.add(box1);
+
+        for (int i = 0; i < 100; ++i) {
+            for (int j = 0; j < 10; ++j) {
+                final Box box1 = this.createBox(new Vec2(200f + i * 4, 400f + j * 4), Box.SIZE / 10, Box.SIZE / 10, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
+                this.bamObjects.add(box1);
+            }
+        }
+
 
         this.controllableBox = box0;
     }
 
     @Override
     protected World initWorld() {
-        final Vec2 gravity = new Vec2(0.0f, -30.0f);
+        final Vec2 gravity = new Vec2(0.0f, -10.0f);
         final World world = new World(gravity);
         world.setAllowSleep(true);
         return world;
     }
 
     @Override
-    public void control(int delta) {
+    public void control(float freq) {
 
         float xVel = 0.0f;
         float yVel = 0.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) xVel -= 0.35f * delta;
-        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) xVel += 0.35f * delta;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) xVel -= 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) xVel += 50000.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) yVel += 0.35f * delta;
-        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) yVel -= 0.35f * delta;
+        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) yVel += 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) yVel -= 50000.0f;
 
-        this.move(controllableBox, new Vec2(xVel, yVel));
+        this.move(controllableBox, new Vec2(xVel, yVel), freq);
     }
 
-    private void move(final AbstractBamObject abstractBamObject, final Vec2 delVelocity) {
-
-        float x = abstractBamObject.getBody().getMass() * delVelocity.x / AbstractBamPlane.TIME_STEP;
-        float y = abstractBamObject.getBody().getMass() * delVelocity.y / AbstractBamPlane.TIME_STEP;
+    private void move(final AbstractBamObject abstractBamObject, final Vec2 delVelocity, final float freq) {
+        float x = abstractBamObject.getBody().getMass() * delVelocity.x * freq;
+        float y = abstractBamObject.getBody().getMass() * delVelocity.y * freq;
         abstractBamObject.getBody().applyForceToCenter(new Vec2(x, y));
     }
 

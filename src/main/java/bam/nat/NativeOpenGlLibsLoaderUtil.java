@@ -21,8 +21,7 @@ public final class NativeOpenGlLibsLoaderUtil {
     /**
      * Class logger
      */
-    public static final Logger LOGGER = LoggerFactory
-            .getLogger(NativeOpenGlLibsLoaderUtil.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NativeOpenGlLibsLoaderUtil.class);
 
     /**
      * OS name system property name

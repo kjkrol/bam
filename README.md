@@ -12,9 +12,9 @@ The physics engine is supported by a **JBox2d** library.
 Project building process is configured and managed by Maven 3.x.
 
 ## Sample
-There is an option to build executable jar file with dependencies:
+There is an option to build executable jar file with dependencies:  
 ```mvn clean compile assembly:single```  
-To run sample app type:
+To run sample app type:  
 ```java -jar target/bam-1.0.0-jar-with-dependencies.jar```
 
 ## References

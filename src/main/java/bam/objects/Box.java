@@ -13,8 +13,14 @@ import org.newdawn.slick.opengl.Texture;
 @Data
 public class Box extends AbstractBamObject {
 
+    protected final float width;
+
+    protected final float height;
+
     public Box(Body body, Texture texture, float width, float height) {
-        super(body, texture, width, height);
+        super(body, texture);
+        this.width = width;
+        this.height = height;
     }
 
     @Override

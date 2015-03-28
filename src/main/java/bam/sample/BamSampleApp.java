@@ -3,15 +3,18 @@ package bam.sample;
 import bam.AbstractBamPlane;
 import bam.GLUtil;
 import bam.objects.AbstractBamObject;
+import bam.objects.Ball;
 import bam.objects.Box;
 import lombok.Data;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
-import java.awt.*;
+import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -19,30 +22,31 @@ import java.awt.*;
  * @since 1.0.0
  */
 @Data
-public class BamPlane extends AbstractBamPlane {
+public class BamSampleApp extends AbstractBamPlane {
 
     public static void main(String[] args) {
-        final BamPlane bamPlane = new BamPlane();
-        bamPlane.start();
+        final BamSampleApp bamSampleApp = new BamSampleApp();
+        bamSampleApp.start();
     }
 
     /**
      *
      */
-    private Box controllableBox;
+    private Optional<AbstractBamObject> controlledBamObject;
 
     @Override
     public void initPlane() {
-        final Texture boxTexture = GLUtil.getTexture("src/main/resources/imgs/box.png");
+        final Texture woodenBoxTexture = GLUtil.getTexture("src/main/resources/textures/wooden_box.png", GLUtil.ImageType.PNG);
+        final Texture stoneTexture = GLUtil.getTexture("src/main/resources/textures/gray_rock.png", GLUtil.ImageType.PNG);
 
         /* add border walls*/
-        final Box border0 = this.createBox(new Vec2(0, WINDOW_HEIGHT), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
+        final Box border0 = this.createBox(new Vec2(0, WINDOW_HEIGHT), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, stoneTexture);
         this.bamObjects.add(border0);
-        final Box border1 = this.createBox(new Vec2(0, 0), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
+        final Box border1 = this.createBox(new Vec2(0, 0), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, stoneTexture);
         this.bamObjects.add(border1);
-        final Box border2 = this.createBox(new Vec2(0, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
+        final Box border2 = this.createBox(new Vec2(0, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, stoneTexture);
         this.bamObjects.add(border2);
-        final Box border3 = this.createBox(new Vec2(WINDOW_WIDTH, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
+        final Box border3 = this.createBox(new Vec2(WINDOW_WIDTH, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, stoneTexture);
         this.bamObjects.add(border3);
 
         /* add bamObjects */
@@ -50,19 +54,17 @@ public class BamPlane extends AbstractBamPlane {
         fixtureDef.density = 10.0f;
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.1f;
-        final Box box0 = this.createBox(new Vec2(100f, 400f), Box.SIZE, Box.SIZE, BodyType.DYNAMIC, fixtureDef, boxTexture);
-        this.bamObjects.add(box0);
+        final Ball ball = this.createBall(new Vec2(200f, 400f), Box.SIZE, BodyType.DYNAMIC, fixtureDef, stoneTexture);
+        this.bamObjects.add(ball);
+        this.controlledBamObject = Optional.of(ball);
 
-
-        for (int i = 0; i < 100; ++i) {
-            for (int j = 0; j < 10; ++j) {
-                final Box box1 = this.createBox(new Vec2(200f + i * 4, 400f + j * 4), Box.SIZE / 10, Box.SIZE / 10, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, boxTexture);
-                this.bamObjects.add(box1);
+        for (int index1 = 0; index1 < 60; ++index1) {
+            for (int index2 = 0; index2 < 20; ++index2) {
+                final Box box = this.createBox(new Vec2(10f + index1 * 10, 340f - index2 * 10), 4, 4, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, woodenBoxTexture);
+                this.bamObjects.add(box);
             }
         }
 
-
-        this.controllableBox = box0;
     }
 
     @Override
@@ -85,7 +87,9 @@ public class BamPlane extends AbstractBamPlane {
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) yVel += 50000.0f;
         if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) yVel -= 50000.0f;
 
-        this.move(controllableBox, new Vec2(xVel, yVel), freq);
+        final Vec2 velocity = new Vec2(xVel, yVel);
+
+        this.controlledBamObject.ifPresent(controlledObj -> this.move(controlledObj, velocity, freq));
     }
 
     private void move(final AbstractBamObject abstractBamObject, final Vec2 delVelocity, final float freq) {
@@ -100,6 +104,14 @@ public class BamPlane extends AbstractBamPlane {
         boxShape.setAsBox(width, height);
         final Body body = this.physicalBodyFactory.createBody(position, boxShape, bodyType, templateFixture);
         return new Box(body, texture, width, height);
+    }
+
+    private Ball createBall(final Vec2 position, final float radius, final BodyType bodyType,
+                          final FixtureDef templateFixture, final Texture texture) {
+        final Shape circleShape = new CircleShape();
+        circleShape.setRadius(radius);
+        final Body body = this.physicalBodyFactory.createBody(position, circleShape, bodyType, templateFixture);
+        return new Ball(body, texture, radius);
     }
 
 }

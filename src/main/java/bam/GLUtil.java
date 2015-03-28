@@ -32,16 +32,20 @@ public class GLUtil {
         return new TrueTypeFont(awtFont, false);
     }
 
+    public enum ImageType {
+        PNG, JPG;
+    }
+
     /**
      * Loads texture from PNG file
      *
      * @param pathToFile
      * @return
      */
-    public static Texture getTexture(final String pathToFile) {
+    public static Texture getTexture(final String pathToFile, ImageType imageType) {
         Texture texture = null;
         try {
-            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream(pathToFile));
+            texture = TextureLoader.getTexture(imageType.name(), ResourceLoader.getResourceAsStream(pathToFile));
 
             LOGGER.info("Texture loaded: " + texture);
             LOGGER.info(">> Image width: " + texture.getImageWidth());

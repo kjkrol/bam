@@ -113,7 +113,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>bam.sample.BamPlane</mainClass>
+                            <mainClass>bam.sample.BamSampleApp</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

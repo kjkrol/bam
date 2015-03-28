@@ -1,6 +1,6 @@
 package bam;
 
-import bam.nat.OpenGLNativeLibsLoaderUtil;
+import bam.commons.NativeLibsLoaderUtil;
 import bam.objects.AbstractBamObject;
 import lombok.Data;
 import org.jbox2d.dynamics.World;
@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -23,7 +24,7 @@ import java.util.List;
 public abstract class AbstractBamPlane {
 
     static {
-        OpenGLNativeLibsLoaderUtil.loadLibs();
+        NativeLibsLoaderUtil.loadLibs(NativeOpenGLLoaderUtil::load);
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBamPlane.class);

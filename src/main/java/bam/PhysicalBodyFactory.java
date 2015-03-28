@@ -1,6 +1,7 @@
 package bam;
 
 import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 
@@ -17,7 +18,7 @@ public class PhysicalBodyFactory {
         this.world = world;
     }
 
-    public Body createBody(final Vec2 position, final PolygonShape boxShape, final BodyType bodyType,
+    public Body createBody(final Vec2 position, final Shape shape, final BodyType bodyType,
                             final FixtureDef templateFixture) {
 
         final BodyDef bd = new BodyDef();
@@ -25,7 +26,7 @@ public class PhysicalBodyFactory {
         bd.position.set(position);
 
         final FixtureDef fd = new FixtureDef();
-        fd.shape = boxShape;
+        fd.shape = shape;
         fd.density = templateFixture.density;
         fd.friction = templateFixture.friction;
         fd.restitution = templateFixture.restitution;

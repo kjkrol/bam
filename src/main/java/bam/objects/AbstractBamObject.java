@@ -26,10 +26,6 @@ public abstract class AbstractBamObject {
 
     protected final Texture texture;
 
-    protected final float width;
-
-    protected final float height;
-
     public abstract void draw();
 
     public float getXPos() {

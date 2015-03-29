@@ -3,7 +3,11 @@ package bam.objects;
 import lombok.Data;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
+
+import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -24,9 +28,34 @@ public abstract class AbstractBamObject {
 
     protected final Body body;
 
-    protected final Texture texture;
+    protected final Optional<Texture> texture;
 
-    public abstract void draw();
+    protected final Optional<ReadableColor> color;
+
+    protected abstract void drawTexture();
+
+    protected abstract void drawShape();
+
+    public void draw() {
+
+        GL11.glLoadIdentity();
+        GL11.glTranslatef(getXPos(), getYPos(), 0);
+
+        float angle = (float) (body.getAngle() * 180 / Math.PI) - 90.0f;
+        GL11.glRotatef(angle, 0, 0, 1);
+        ReadableColor color1 = this.color.orElse(ReadableColor.WHITE);
+        GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());
+
+        if(this.texture.isPresent()) {
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            this.texture.get().bind();
+            this.drawTexture();
+        } else {
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            this.drawShape();
+        }
+
+    }
 
     public float getXPos() {
         return body.getPosition().x;

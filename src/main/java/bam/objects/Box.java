@@ -3,7 +3,10 @@ package bam.objects;
 import lombok.Data;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
+
+import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -18,22 +21,21 @@ public class Box extends AbstractBamObject {
     protected final float height;
 
     public Box(Body body, Texture texture, float width, float height) {
-        super(body, texture);
+        super(body, Optional.of(texture), Optional.empty());
+        this.width = width;
+        this.height = height;
+    }
+
+    public Box(Body body, ReadableColor color, float width, float height) {
+        super(body, Optional.empty(), Optional.of(color));
         this.width = width;
         this.height = height;
     }
 
     @Override
-    public void draw() {
-        this.texture.bind();
+    protected void drawTexture() {
 
-        GL11.glLoadIdentity();
-        GL11.glTranslatef(getXPos(), getYPos(), 0);
-
-        float angle = (float) (body.getAngle() * 180 / Math.PI) - 90.0f;
-        GL11.glRotatef(angle, 0f, 0f, 1f);
-
-        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glBegin(GL11.GL_POLYGON);
         GL11.glTexCoord2f(0, 0);
         GL11.glVertex2f(-width, -height);
         GL11.glTexCoord2f(1, 0);
@@ -43,6 +45,25 @@ public class Box extends AbstractBamObject {
         GL11.glTexCoord2f(0, 1);
         GL11.glVertex2f(-width, +height);
 
+        GL11.glEnd();
+    }
+
+    @Override
+    protected void drawShape() {
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        GL11.glVertex2f(-width, -height);
+        GL11.glVertex2f(+width, -height);
+        GL11.glVertex2f(+width, +height);
+        GL11.glVertex2f(-width, +height);
+        GL11.glEnd();
+
+        this.color.ifPresent(c -> GL11.glColor4f(c.getRed(), c.getGreen(), c.getBlue(), 0.5f));
+        GL11.glBegin(GL11.GL_POLYGON);
+        GL11.glVertex2f(-width, -height);
+        GL11.glVertex2f(+width, -height);
+        GL11.glVertex2f(+width, +height);
+        GL11.glVertex2f(-width, +height);
         GL11.glEnd();
     }
 

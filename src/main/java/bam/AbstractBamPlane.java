@@ -35,8 +35,8 @@ public abstract class AbstractBamPlane {
 
 
     protected static final int FPS_LIMIT = 60;
-    protected static final int VELOCITY_ITERATIONS = 6;
-    protected static final int POSITION_ITERATIONS = 2;
+    protected static final int VELOCITY_ITERATIONS = 8;
+    protected static final int POSITION_ITERATIONS = 3;
 
     protected final List<AbstractBamObject> bamObjects;
 
@@ -111,6 +111,11 @@ public abstract class AbstractBamPlane {
             GL11.glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1, -1);
 
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+
+            GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            GL11.glClearDepth(1);
+
             GL11.glLoadIdentity();
         } catch (LWJGLException e) {
             LOGGER.error(e.getMessage(), e);

@@ -18,7 +18,6 @@ import java.util.Optional;
 public abstract class AbstractBamObject {
 
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
-    public static final int SIZE = 30;
 
     static {
         DEFAULT_FIXTURE_DEF.density = 1.0f;

@@ -19,7 +19,7 @@ public class PhysicalBodyFactory {
     }
 
     public Body createBody(final Vec2 position, final Shape shape, final BodyType bodyType,
-                            final FixtureDef templateFixture) {
+                           final FixtureDef templateFixture) {
 
         final BodyDef bd = new BodyDef();
         bd.type = bodyType;

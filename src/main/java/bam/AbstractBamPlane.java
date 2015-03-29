@@ -35,8 +35,8 @@ public abstract class AbstractBamPlane {
 
 
     protected static final int FPS_LIMIT = 60;
-    protected static final int VELOCITY_ITERATIONS = 8;
-    protected static final int POSITION_ITERATIONS = 3;
+    protected static final int VELOCITY_ITERATIONS = 10;
+    protected static final int POSITION_ITERATIONS = 10;
 
     protected final List<AbstractBamObject> bamObjects;
 
@@ -75,7 +75,7 @@ public abstract class AbstractBamPlane {
             GL11.glPopMatrix();
             GL11.glFlush();
 
-            Display.sync(FPS_LIMIT);
+            Display.sync(FPS_LIMIT * 4);
             Display.update();
         }
         Display.destroy();

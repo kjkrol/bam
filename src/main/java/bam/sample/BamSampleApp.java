@@ -15,6 +15,7 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
+import org.jbox2d.dynamics.joints.RevoluteJointDef;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
@@ -46,54 +47,67 @@ public class BamSampleApp extends AbstractBamPlane {
     @Override
     public void initPlane() {
         final Texture woodenBoxTexture = GLUtil.getTexture("src/main/resources/textures/wooden_box.png", GLUtil.ImageType.PNG);
-        final Texture stoneTexture = GLUtil.getTexture("src/main/resources/textures/gray_rock.png", GLUtil.ImageType.PNG);
+        final Texture ballTexture = GLUtil.getTexture("src/main/resources/textures/ball.png", GLUtil.ImageType.PNG);
 
-        /* add border walls*/
-        Box border = this.createBox(new Vec2(0, WINDOW_HEIGHT), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.ORANGE);
-        border.getBody().setUserData(border);
-        this.bamObjects.add(border);
-        border = this.createBox(new Vec2(0, 0), WINDOW_WIDTH, 5, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.ORANGE);
-        border.getBody().setUserData(border);
-        this.bamObjects.add(border);
-        border = this.createBox(new Vec2(0, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.ORANGE);
-        border.getBody().setUserData(border);
-        this.bamObjects.add(border);
-        border = this.createBox(new Vec2(WINDOW_WIDTH, 0), 5, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.ORANGE);
-        border.getBody().setUserData(border);
-        this.bamObjects.add(border);
+        final float borderWidth = 10;
 
+        /* add border walls */
+        final Box topBorder = this.createBox(new Vec2(0, WINDOW_HEIGHT), WINDOW_WIDTH, borderWidth, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.YELLOW);
+        topBorder.getBody().setUserData(topBorder);
+        this.bamObjects.add(topBorder);
+        final Box bottomBorder = this.createBox(new Vec2(0, 0), WINDOW_WIDTH, borderWidth, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.YELLOW);
+        bottomBorder.getBody().setUserData(bottomBorder);
+        this.bamObjects.add(bottomBorder);
+        final Box leftBorder = this.createBox(new Vec2(0, 0), borderWidth, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.YELLOW);
+        leftBorder.getBody().setUserData(leftBorder);
+        this.bamObjects.add(leftBorder);
+        final Box rightBorder = this.createBox(new Vec2(WINDOW_WIDTH, 0), borderWidth, WINDOW_HEIGHT, BodyType.STATIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.YELLOW);
+        rightBorder.getBody().setUserData(rightBorder);
+        this.bamObjects.add(rightBorder);
 
         /* add bamObjects */
         final FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = 10.0f;
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.1f;
-        final Ball ball = this.createBall(new Vec2(200f, 400f), Box.SIZE, BodyType.DYNAMIC, fixtureDef, ReadableColor.RED);
+        final Ball ball = this.createBall(new Vec2(200f, 400f), Ball.DEFAULT_SIZE, BodyType.DYNAMIC, fixtureDef, ReadableColor.RED);
         this.bamObjects.add(ball);
         this.controlledBamObject = Optional.of(ball);
         ball.getBody().setUserData(ball);
+//
+        final Box box1 = this.createBox(new Vec2(40f, 340f), Box.DEFAULT_SIZE, Box.DEFAULT_SIZE, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.GREEN);
+        this.bamObjects.add(box1);
+        final Box box2 = this.createBox(new Vec2(210f, 340f), Box.DEFAULT_SIZE, Box.DEFAULT_SIZE, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.GREEN);
+        this.bamObjects.add(box2);
 
-        for (int index1 = 0; index1 < 60; ++index1) {
-            for (int index2 = 0; index2 < 20; ++index2) {
-                final Box box = this.createBox(new Vec2(10f + index1 * 10, 340f - index2 * 10), 4, 4, BodyType.DYNAMIC, Box.DEFAULT_FIXTURE_DEF, ReadableColor.GREEN);
-                this.bamObjects.add(box);
-            }
-        }
+        final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+//        revoluteJointDef.initialize(box1.getBody(), box2.getBody(), box1.getBody().getWorldCenter());
+        revoluteJointDef.bodyA = box1.getBody();
+        revoluteJointDef.bodyB = box2.getBody();
+        revoluteJointDef.collideConnected = false;
+        revoluteJointDef.referenceAngle = 0;
+        revoluteJointDef.enableLimit = true;
+        revoluteJointDef.lowerAngle = (float) (-45.0f * Math.PI / 180.f);
+        revoluteJointDef.upperAngle = (float) (45.0f * Math.PI / 180.f);
+
+        revoluteJointDef.localAnchorA = new Vec2(0.75f * Box.DEFAULT_SIZE, 0);
+        revoluteJointDef.localAnchorB = new Vec2(-0.75f * Box.DEFAULT_SIZE, 0);
+        world.createJoint(revoluteJointDef);
 
     }
 
     @Override
     protected World initWorld() {
-        final Vec2 gravity = new Vec2(0.0f, -10.0f);
+        final Vec2 gravity = new Vec2(0.0f, -100.0f);
         final World world = new World(gravity);
         world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
-                final Object obj1 = contact.getFixtureA().getBody().getUserData();
-                final Object obj2 = contact.getFixtureB().getBody().getUserData();
-                if (null != obj1 && null != obj2) {
-                    LOGGER.info("Ball is touching the wall.");
-                }
+//                final Object obj1 = contact.getFixtureA().getBody().getUserData();
+//                final Object obj2 = contact.getFixtureB().getBody().getUserData();
+//                if (null != obj1 && null != obj2) {
+//                    LOGGER.info("Ball is touching the wall.");
+//                }
             }
 
             @Override
@@ -155,7 +169,7 @@ public class BamSampleApp extends AbstractBamPlane {
     }
 
     private Ball createBall(final Vec2 position, final float radius, final BodyType bodyType,
-                          final FixtureDef templateFixture, final Texture texture) {
+                            final FixtureDef templateFixture, final Texture texture) {
         final Shape circleShape = new CircleShape();
         circleShape.setRadius(radius);
         final Body body = this.physicalBodyFactory.createBody(position, circleShape, bodyType, templateFixture);

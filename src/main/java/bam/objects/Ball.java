@@ -16,6 +16,8 @@ import java.util.Optional;
 @Data
 public class Ball extends AbstractBamObject {
 
+    public static final int DEFAULT_SIZE = 30;
+
     private final float radius;
 
     private final int edges = 16;

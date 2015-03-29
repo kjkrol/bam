@@ -16,6 +16,8 @@ import java.util.Optional;
 @Data
 public class Box extends AbstractBamObject {
 
+    public static final int DEFAULT_SIZE = 30;
+
     protected final float width;
 
     protected final float height;
@@ -28,8 +30,8 @@ public class Box extends AbstractBamObject {
 
     public Box(Body body, ReadableColor color, float width, float height) {
         super(body, Optional.empty(), Optional.of(color));
-        this.width = width;
-        this.height = height;
+        this.width = height;
+        this.height = width;
     }
 
     @Override

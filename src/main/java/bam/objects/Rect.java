@@ -14,7 +14,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Data
-public class Box extends AbstractBamObject {
+public class Rect extends AbstractBamObject {
 
     public static final int DEFAULT_SIZE = 30;
 
@@ -22,17 +22,16 @@ public class Box extends AbstractBamObject {
 
     protected final float height;
 
-    public Box(Body body, Texture texture, float width, float height) {
-        super(body, Optional.of(texture), Optional.empty());
-        this.width = width;
-        this.height = height;
-    }
-
-    public Box(Body body, ReadableColor color, float width, float height) {
-        super(body, Optional.empty(), Optional.of(color));
+    public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float width, float height) {
+        super(body, texture, color);
         this.width = height;
         this.height = width;
     }
+
+    public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float[] param) {
+        this(body, texture, color, param[0], param[1]);
+    }
+
 
     @Override
     protected void drawTexture() {

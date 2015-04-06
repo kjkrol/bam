@@ -14,28 +14,30 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Data
-public class Ball extends AbstractBamObject {
-
-    public static final int DEFAULT_SIZE = 30;
+public class Oval extends AbstractBamObject {
 
     private final float radius;
 
-    private final int edges = 16;
-    private float[] x = new float[edges];
-    private float[] y = new float[edges];
-    private float[] tx = new float[edges];
-    private float[] ty = new float[edges];
+    private final int edges;
+    private final float[] x;
+    private final float[] y;
+    private final float[] tx;
+    private final float[] ty;
 
-    public Ball(Body body, Texture texture, float radius) {
-        super(body, Optional.of(texture), Optional.empty());
+    public Oval(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float radius) {
+        super(body, texture, color);
         this.radius = radius;
+        int initEdges = (int) (radius / 4);
+        this.edges = initEdges < 12 ? 12 : initEdges;
+        this.x = new float[edges];
+        this.y = new float[edges];
+        this.tx = new float[edges];
+        this.ty = new float[edges];
         this.init();
     }
 
-    public Ball(Body body, ReadableColor color, float radius) {
-        super(body, Optional.empty(), Optional.of(color));
-        this.radius = radius;
-        this.init();
+    public Oval(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float[] params) {
+        this(body, texture, color, params[0]);
     }
 
     @Override

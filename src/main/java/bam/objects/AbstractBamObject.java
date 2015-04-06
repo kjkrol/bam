@@ -15,13 +15,13 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Data
-public abstract class AbstractBamObject {
+public abstract class AbstractBamObject implements ControllableBamObject {
 
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
 
     static {
         DEFAULT_FIXTURE_DEF.density = 1.0f;
-        DEFAULT_FIXTURE_DEF.friction = 1.0f;
+        DEFAULT_FIXTURE_DEF.friction = 0.7f;
         DEFAULT_FIXTURE_DEF.restitution = 0.5f;
     }
 

@@ -55,7 +55,7 @@ public class IOUtil {
              * Prepare small buffer that will be used to rewrite data between
              * streams.
              */
-            byte[] bytes = new byte[BUFFER_SIZE];
+            final byte[] bytes = new byte[BUFFER_SIZE];
             /*
              * initiate the counter of read bits (it does not contain overall
              * number of read bits but the number of read bits for each loop

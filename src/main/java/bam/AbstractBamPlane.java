@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -42,16 +41,20 @@ public abstract class AbstractBamPlane {
 
     protected final World world;
 
+    protected final StopWatch stopWatch;
+
     protected final PhysicalBodyFactory physicalBodyFactory;
 
-    protected final StopWatch stopWatch;
+    protected final BamObjectsFactory bamObjectsFactory;
 
     public AbstractBamPlane() {
         this.bamObjects = new ArrayList<>();
         this.stopWatch = new StopWatch();
         this.world = this.initWorld();
-        this.physicalBodyFactory = new PhysicalBodyFactory(this.world);
+        this.physicalBodyFactory = new PhysicalBodyFactory(world);
+        this.bamObjectsFactory = new BamObjectsFactory(this.physicalBodyFactory::createBody, this.bamObjects::add);
         this.initGL();
+        this.initTextures();
         this.initPlane();
     }
 
@@ -85,6 +88,8 @@ public abstract class AbstractBamPlane {
 
     protected abstract void control(float freq);
 
+    protected abstract void initTextures();
+
     protected abstract void initPlane();
 
     /**
@@ -111,7 +116,6 @@ public abstract class AbstractBamPlane {
             GL11.glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, 1, -1);
 
             GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
 
             GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             GL11.glClearDepth(1);

@@ -62,7 +62,7 @@ public class BamSampleApp extends AbstractBamPlane {
                 Optional.empty(), Optional.of(ReadableColor.RED));
         this.controlledBamObject = Optional.of(oval);
 
-        this.buildElasticBridge();
+        this.buildElasticBridge(new Vec2(120, 140), 100, 2, 40, 3);
 
     }
 
@@ -125,21 +125,31 @@ public class BamSampleApp extends AbstractBamPlane {
                 BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.YELLOW));
     }
 
-    private void buildElasticBridge() {
+    private void buildElasticBridge(final Vec2 startPosition, final float width, final float thickness,
+                                    final int componentsNumber, final float maxAngle) {
 
-        final Vec2 startPosition = new Vec2(120, 340);
-        Rect rect1 = this.bamObjectsFactory.createRect(startPosition, 30, 6,
-                BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.ORANGE));
+        final float componentWidth = width / (float) componentsNumber;
+
+        Rect rect1 = this.bamObjectsFactory.createRect(startPosition, componentWidth, thickness,
+                BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF,
+                Optional.empty(), Optional.of(ReadableColor.ORANGE));
         Rect rect2;
-        for (int i = 0; i < 4 ; ++i) {
-            rect2 = this.bamObjectsFactory.createRect(new Vec2(rect1.getXPos() + 30 * 2, rect1.getYPos()), 30, 6,
-                    BodyType.DYNAMIC, Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.GREEN));
-            this.join(rect1, rect2);
+        for (int index = 1; index < componentsNumber - 1 ; ++index) {
+            rect2 = this.bamObjectsFactory.createRect(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()),
+                    componentWidth, thickness, BodyType.DYNAMIC, Rect.DEFAULT_FIXTURE_DEF,
+                    Optional.empty(), Optional.of(ReadableColor.GREEN));
+            this.join(rect1, rect2, maxAngle);
             rect1 = rect2;
         }
+
+        rect2 = this.bamObjectsFactory.createRect(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()),
+                componentWidth, thickness, BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF,
+                Optional.empty(), Optional.of(ReadableColor.ORANGE));
+        this.join(rect1, rect2, maxAngle);
     }
 
-    private void join(final Rect rect1, final Rect rect2) {
+    private void join(final Rect rect1, final Rect rect2, final float maxAngle) {
+
         final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
         revoluteJointDef.bodyA = rect1.getBody();
         revoluteJointDef.bodyB = rect2.getBody();
@@ -147,15 +157,14 @@ public class BamSampleApp extends AbstractBamPlane {
         revoluteJointDef.referenceAngle = 0;
         revoluteJointDef.enableLimit = true;
 
+        final float width1 = rect1.getWidth();
+        final float width2 = rect2.getWidth();
 
-        float y1 = rect1.getWidth() * 5;
-        float y2 = rect2.getWidth() * 5;
+        revoluteJointDef.lowerAngle = (float) (-maxAngle * Math.PI / 180.f);
+        revoluteJointDef.upperAngle = (float) (+maxAngle * Math.PI / 180.f);
 
-        revoluteJointDef.lowerAngle = (float) (-5.0f * Math.PI / 180.f);
-        revoluteJointDef.upperAngle = (float) (+5.0f * Math.PI / 180.f);
-
-        revoluteJointDef.localAnchorA.set(y1, 0);
-        revoluteJointDef.localAnchorB.set(-y2, 0);
+        revoluteJointDef.localAnchorA.set(+width1, 0);
+        revoluteJointDef.localAnchorB.set(-width2, 0);
         world.createJoint(revoluteJointDef);
     }
 

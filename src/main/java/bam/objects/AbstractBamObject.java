@@ -40,7 +40,7 @@ public abstract class AbstractBamObject implements ControllableBamObject {
         GL11.glLoadIdentity();
         GL11.glTranslatef(getXPos(), getYPos(), 0);
 
-        float angle = (float) (body.getAngle() * 180 / Math.PI) - 90.0f;
+        float angle = (float) (body.getAngle() * 180 / Math.PI);
         GL11.glRotatef(angle, 0, 0, 1);
         ReadableColor color1 = this.color.orElse(ReadableColor.WHITE);
         GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());

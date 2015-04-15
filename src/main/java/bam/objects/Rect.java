@@ -24,8 +24,8 @@ public class Rect extends AbstractBamObject {
 
     public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float width, float height) {
         super(body, texture, color);
-        this.width = height;
-        this.height = width;
+        this.width = width;
+        this.height = height;
     }
 
     public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float[] param) {

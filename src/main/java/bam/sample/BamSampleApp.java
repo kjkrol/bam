@@ -43,8 +43,8 @@ public class BamSampleApp extends AbstractBamPlane {
 
     @Override
     public void initTextures() {
-        final Texture woodenBoxTexture = GLUtil.getTexture("src/main/resources/textures/wooden_box.png", GLUtil.ImageType.PNG);
-        final Texture ballTexture = GLUtil.getTexture("src/main/resources/textures/ball.png", GLUtil.ImageType.PNG);
+        final Texture woodenBoxTexture = GLUtil.getTexture("textures/wooden_box.png", GLUtil.ImageType.PNG);
+        final Texture ballTexture = GLUtil.getTexture("textures/ball.png", GLUtil.ImageType.PNG);
     }
 
     @Override

@@ -98,9 +98,6 @@ public final class NativeLibsLoaderUtil {
         });
     }
 
-    /**
-     * @return
-     */
     private static File getTempDir() {
         final String tmpDirName = System.getProperty(JAVA_IO_TMPDIR);
         final File tmpDir = new File(tmpDirName);
@@ -110,12 +107,7 @@ public final class NativeLibsLoaderUtil {
         return tmpDir;
     }
 
-    /**
-     * @param libsWithSubDir
-     * @param tmpDir
-     */
     private static void unpackLibs(final LibsWithSubDir libsWithSubDir, final File tmpDir) {
-
         Arrays.stream(libsWithSubDir.getLibsNames()).forEach(libName -> {
             try {
                 unpackLib(libsWithSubDir.getSubDir(), libName, tmpDir);
@@ -134,8 +126,8 @@ public final class NativeLibsLoaderUtil {
      * @return absolute path to the library for this OS and arch
      * @throws IOException
      */
-    private static String unpackLib(final String subDir, final String libraryName, final File tmpDir) throws IOException {
-
+    private static String unpackLib(final String subDir, final String libraryName, final File tmpDir)
+            throws IOException {
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -151,22 +143,11 @@ public final class NativeLibsLoaderUtil {
         }
     }
 
-    /**
-     * @param subDir
-     * @param libraryName
-     * @return
-     */
     private static InputStream getInputStreamToFile(final String subDir, final String libraryName) {
         final String path = ROOT_LIB_DIR + subDir + libraryName;
         return NativeLibsLoaderUtil.class.getClassLoader().getResourceAsStream(path);
     }
 
-    /**
-     * @param libraryName
-     * @param tmpDir
-     * @return
-     * @throws IOException
-     */
     private static File createTempLibFile(final String libraryName, final File tmpDir) throws IOException {
         final File tempFile = new File(tmpDir + "/" + libraryName);
         tempFile.createNewFile();
@@ -175,9 +156,7 @@ public final class NativeLibsLoaderUtil {
         return tempFile;
     }
 
-    /**
-     * @param closeable
-     */
+
     private static void closeWithCheck(Closeable closeable) {
         if (closeable != null) {
             try {
@@ -188,9 +167,6 @@ public final class NativeLibsLoaderUtil {
         }
     }
 
-    /**
-     * @param tmpDirName
-     */
     private static void addLibsToJavaLibraryPath(final String tmpDirName) {
         try {
             System.setProperty(JAVA_LIBRARY_PATH, tmpDirName);
@@ -201,6 +177,5 @@ public final class NativeLibsLoaderUtil {
             LOGGER.error(e.getMessage(), e);
         }
     }
-
 
 }

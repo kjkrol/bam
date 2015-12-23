@@ -22,13 +22,13 @@ public class Rect extends AbstractBamObject {
 
     protected final float height;
 
-    public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float width, float height) {
+    public Rect(Body body, Texture texture, ReadableColor color, float width, float height) {
         super(body, texture, color);
         this.width = width;
         this.height = height;
     }
 
-    public Rect(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float[] param) {
+    public Rect(Body body, Texture texture, ReadableColor color, float[] param) {
         this(body, texture, color, param[0], param[1]);
     }
 
@@ -59,7 +59,9 @@ public class Rect extends AbstractBamObject {
         GL11.glVertex2f(-width, +height);
         GL11.glEnd();
 
-        this.color.ifPresent(c -> GL11.glColor4f(c.getRed(), c.getGreen(), c.getBlue(), 0.5f));
+        if (null!= this.color) {
+            GL11.glColor4f(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), 0.5f);
+        }
         GL11.glBegin(GL11.GL_POLYGON);
         GL11.glVertex2f(-width, -height);
         GL11.glVertex2f(+width, -height);

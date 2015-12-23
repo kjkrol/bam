@@ -1,6 +1,7 @@
 package bam.sample;
 
 import bam.AbstractBamPlane;
+import bam.BamObjectsFactory;
 import bam.GLUtil;
 import bam.objects.AbstractBamObject;
 import bam.objects.Oval;
@@ -10,7 +11,9 @@ import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 import org.lwjgl.input.Keyboard;
@@ -36,9 +39,6 @@ public class BamSampleApp extends AbstractBamPlane {
         bamSampleApp.start();
     }
 
-    /**
-     *
-     */
     private Optional<AbstractBamObject> controlledBamObject;
 
     @Override
@@ -49,7 +49,6 @@ public class BamSampleApp extends AbstractBamPlane {
 
     @Override
     public void initPlane() {
-
         /* add border walls */
         this.addBorderWalls(10);
 
@@ -58,8 +57,12 @@ public class BamSampleApp extends AbstractBamPlane {
         fixtureDef.density = 10.0f;
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.1f;
-        final Oval oval = this.bamObjectsFactory.createOval(new Vec2(200f, 400f), 12, BodyType.DYNAMIC, fixtureDef,
-                Optional.empty(), Optional.of(ReadableColor.RED));
+        final Oval oval = this.bamObjectsFactory.createOval(BamObjectsFactory.ovalBuilder()
+                .bodyType(BodyType.DYNAMIC)
+                .color(ReadableColor.RED)
+                .position(new Vec2(200f, 400f))
+                .radius(12)
+                .templateFixture(fixtureDef));
         this.controlledBamObject = Optional.of(oval);
 
         this.buildElasticBridge(new Vec2(120, 140), 100, 2, 40, 3);
@@ -110,19 +113,35 @@ public class BamSampleApp extends AbstractBamPlane {
         this.controlledBamObject.ifPresent(controlledObj -> controlledObj.move(controlledObj, velocity, freq));
     }
 
-    /**
-     *
-     * @param borderWidth
-     */
     private void addBorderWalls(final float borderWidth) {
-        this.bamObjectsFactory.createRect(new Vec2(0, WINDOW_HEIGHT), WINDOW_WIDTH, borderWidth, BodyType.STATIC,
-                Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(new Vec2(0, 0), WINDOW_WIDTH, borderWidth, BodyType.STATIC,
-                Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(new Vec2(0, 0), borderWidth, WINDOW_HEIGHT, BodyType.STATIC,
-                Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(new Vec2(WINDOW_WIDTH, 0), borderWidth, WINDOW_HEIGHT,
-                BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF, Optional.empty(), Optional.of(ReadableColor.YELLOW));
+        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(new Vec2(0, WINDOW_HEIGHT))
+                .width(WINDOW_WIDTH)
+                .height(borderWidth)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.YELLOW));
+        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(new Vec2(0, 0))
+                .width(WINDOW_WIDTH)
+                .height(borderWidth)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.YELLOW));
+        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(new Vec2(0, 0))
+                .width(borderWidth)
+                .height(WINDOW_HEIGHT)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.YELLOW));
+        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(new Vec2(WINDOW_WIDTH, 0))
+                .width(borderWidth)
+                .height(WINDOW_HEIGHT)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.YELLOW));
     }
 
     private void buildElasticBridge(final Vec2 startPosition, final float width, final float thickness,
@@ -130,21 +149,37 @@ public class BamSampleApp extends AbstractBamPlane {
 
         final float componentWidth = width / (float) componentsNumber;
 
-        Rect rect1 = this.bamObjectsFactory.createRect(startPosition, componentWidth, thickness,
-                BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF,
-                Optional.empty(), Optional.of(ReadableColor.ORANGE));
+        Rect rect1 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(startPosition)
+                .width(componentWidth)
+                .height(thickness)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.ORANGE)
+        );
         Rect rect2;
-        for (int index = 1; index < componentsNumber - 1 ; ++index) {
-            rect2 = this.bamObjectsFactory.createRect(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()),
-                    componentWidth, thickness, BodyType.DYNAMIC, Rect.DEFAULT_FIXTURE_DEF,
-                    Optional.empty(), Optional.of(ReadableColor.GREEN));
+        for (int index = 1; index < componentsNumber - 1; ++index) {
+            rect2 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                    .position(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()))
+                    .width(componentWidth)
+                    .height(thickness)
+                    .bodyType(BodyType.DYNAMIC)
+                    .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                    .color(ReadableColor.GREEN)
+            );
+
+
             this.join(rect1, rect2, maxAngle);
             rect1 = rect2;
         }
 
-        rect2 = this.bamObjectsFactory.createRect(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()),
-                componentWidth, thickness, BodyType.STATIC, Rect.DEFAULT_FIXTURE_DEF,
-                Optional.empty(), Optional.of(ReadableColor.ORANGE));
+        rect2 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+                .position(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()))
+                .width(componentWidth)
+                .height(thickness)
+                .bodyType(BodyType.STATIC)
+                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .color(ReadableColor.ORANGE));
         this.join(rect1, rect2, maxAngle);
     }
 

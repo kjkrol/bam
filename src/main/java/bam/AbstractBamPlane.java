@@ -58,11 +58,8 @@ public abstract class AbstractBamPlane {
         this.initPlane();
     }
 
-    /**
-     *
-     */
-    public void start() {
 
+    public void start() {
         this.getStopWatch().getDelta();
         while (!Display.isCloseRequested()) {
             final int delta = this.getStopWatch().getDelta();
@@ -92,9 +89,6 @@ public abstract class AbstractBamPlane {
 
     protected abstract void initPlane();
 
-    /**
-     * @throws LWJGLException
-     */
     protected void initGL() {
         try {
             final DisplayMode mode = GLUtil.getDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT);

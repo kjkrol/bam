@@ -6,8 +6,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-import java.util.Optional;
-
 /**
  * @author Karol Krol
  * @version 1.0.0
@@ -24,7 +22,7 @@ public class Oval extends AbstractBamObject {
     private final float[] tx;
     private final float[] ty;
 
-    public Oval(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float radius) {
+    public Oval(Body body, Texture texture, ReadableColor color, float radius) {
         super(body, texture, color);
         this.radius = radius;
         int initEdges = (int) (radius / 4);
@@ -36,7 +34,7 @@ public class Oval extends AbstractBamObject {
         this.init();
     }
 
-    public Oval(Body body, Optional<Texture> texture, Optional<ReadableColor> color, float[] params) {
+    public Oval(Body body, Texture texture, ReadableColor color, float[] params) {
         this(body, texture, color, params[0]);
     }
 
@@ -75,7 +73,9 @@ public class Oval extends AbstractBamObject {
         GL11.glEnd();
 
         GL11.glBegin(GL11.GL_POLYGON);
-        this.color.ifPresent(c -> GL11.glColor4f(c.getRed(), c.getGreen(), c.getBlue(), 0.5f));
+        if (null != this.color) {
+            GL11.glColor4f(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), 0.5f);
+        }
         for (int index = 0; index < this.edges; ++index) {
             GL11.glVertex2f(x[index], y[index]);
         }

@@ -27,9 +27,9 @@ public abstract class AbstractBamObject implements ControllableBamObject {
 
     protected final Body body;
 
-    protected final Optional<Texture> texture;
+    protected final Texture texture;
 
-    protected final Optional<ReadableColor> color;
+    protected final ReadableColor color;
 
     protected abstract void drawTexture();
 
@@ -42,12 +42,12 @@ public abstract class AbstractBamObject implements ControllableBamObject {
 
         float angle = (float) (body.getAngle() * 180 / Math.PI);
         GL11.glRotatef(angle, 0, 0, 1);
-        ReadableColor color1 = this.color.orElse(ReadableColor.WHITE);
+        ReadableColor color1 = null != this.color ? color : ReadableColor.WHITE;
         GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());
 
-        if(this.texture.isPresent()) {
+        if(null != this.texture) {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            this.texture.get().bind();
+            this.texture.bind();
             this.drawTexture();
         } else {
             GL11.glDisable(GL11.GL_TEXTURE_2D);

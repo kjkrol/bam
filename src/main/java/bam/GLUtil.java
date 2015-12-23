@@ -33,7 +33,7 @@ public class GLUtil {
     }
 
     public enum ImageType {
-        PNG, JPG;
+        PNG, JPG
     }
 
     /**

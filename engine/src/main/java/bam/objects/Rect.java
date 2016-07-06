@@ -1,26 +1,22 @@
 package bam.objects;
 
-import lombok.Data;
+import lombok.Getter;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-import java.util.Optional;
-
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-@Data
 public class Rect extends AbstractBamObject {
 
     public static final int DEFAULT_SIZE = 30;
 
-    protected final float width;
+    private static final float HALF = 0.5f;
 
-    protected final float height;
+    @Getter
+    private final float width;
+
+    @Getter
+    private final float height;
 
     public Rect(Body body, Texture texture, ReadableColor color, float width, float height) {
         super(body, texture, color);
@@ -31,7 +27,6 @@ public class Rect extends AbstractBamObject {
     public Rect(Body body, Texture texture, ReadableColor color, float[] param) {
         this(body, texture, color, param[0], param[1]);
     }
-
 
     @Override
     protected void drawTexture() {
@@ -59,8 +54,9 @@ public class Rect extends AbstractBamObject {
         GL11.glVertex2f(-width, +height);
         GL11.glEnd();
 
-        if (null!= this.color) {
-            GL11.glColor4f(this.color.getRed(), this.color.getGreen(), this.color.getBlue(), 0.5f);
+        final ReadableColor color = this.getColor();
+        if (null != color) {
+            GL11.glColor4f(color.getRed(), color.getGreen(), color.getBlue(), HALF);
         }
         GL11.glBegin(GL11.GL_POLYGON);
         GL11.glVertex2f(-width, -height);

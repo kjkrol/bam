@@ -3,6 +3,7 @@ package bam;
 import bam.commons.NativeLibsLoaderUtil;
 import bam.objects.AbstractBamObject;
 import lombok.Data;
+import lombok.Getter;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
@@ -32,24 +33,29 @@ public abstract class AbstractBamPlane {
     protected static final int WINDOW_WIDTH = 640;
     protected static final int WINDOW_HEIGHT = 480;
 
-
-    protected static final int FPS_LIMIT = 60;
+    protected static final int FPS_LIMIT = 60 * 4;
     protected static final int VELOCITY_ITERATIONS = 10;
     protected static final int POSITION_ITERATIONS = 10;
 
-    protected final List<AbstractBamObject> bamObjects;
+    private static final float TIME_AMOUNT_FACTOR_COEFFICIENT = 1000.f;
+    private static final float TIME_AMOUNT_FACTOR = 1.0f / TIME_AMOUNT_FACTOR_COEFFICIENT;
 
-    protected final World world;
+    @Getter
+    private final List<AbstractBamObject> bamObjects = new ArrayList<>();
 
-    protected final StopWatch stopWatch;
+    @Getter
+    private final World world;
 
-    protected final PhysicalBodyFactory physicalBodyFactory;
+    @Getter
+    private final StopWatch stopWatch = new StopWatch();
 
-    protected final BamObjectsFactory bamObjectsFactory;
+    @Getter
+    private final PhysicalBodyFactory physicalBodyFactory;
+
+    @Getter
+    private final BamObjectsFactory bamObjectsFactory;
 
     public AbstractBamPlane() {
-        this.bamObjects = new ArrayList<>();
-        this.stopWatch = new StopWatch();
         this.world = this.initWorld();
         this.physicalBodyFactory = new PhysicalBodyFactory(world);
         this.bamObjectsFactory = new BamObjectsFactory(this.physicalBodyFactory::createBody, this.bamObjects::add);
@@ -58,12 +64,11 @@ public abstract class AbstractBamPlane {
         this.initPlane();
     }
 
-
     public void start() {
         this.getStopWatch().getDelta();
         while (!Display.isCloseRequested()) {
             final int delta = this.getStopWatch().getDelta();
-            final float freq = delta / 1000.0f;
+            final float freq = delta * TIME_AMOUNT_FACTOR;
             this.getWorld().step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
             this.control(freq);
 
@@ -75,7 +80,7 @@ public abstract class AbstractBamPlane {
             GL11.glPopMatrix();
             GL11.glFlush();
 
-            Display.sync(FPS_LIMIT * 4);
+            Display.sync(FPS_LIMIT);
             Display.update();
         }
         Display.destroy();

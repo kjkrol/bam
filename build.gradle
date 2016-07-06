@@ -1,0 +1,90 @@
+group = 'kjkrol.bam'
+
+apply plugin: 'net.researchgate.release'
+apply plugin: 'java'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.researchgate', name: 'gradle-release', version: '2.4.0'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
+    apply plugin: 'checkstyle'
+    apply plugin: 'jacoco'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        integrationTestCompile.extendsFrom testCompile
+        integrationTestRuntime.extendsFrom testRuntime
+    }
+
+    sourceSets {
+        integrationTest {
+            groovy.srcDir file('src/test-integration/groovy')
+            resources.srcDir file('src/test-integration/resources')
+            compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.integrationTestCompile
+            runtimeClasspath = output + compileClasspath + configurations.integrationTestRuntime
+        }
+    }
+
+    dependencies {
+        compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
+        compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
+        compile group: 'com.google.guava', name: 'guava', version: '19.0'
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
+    }
+
+    checkstyle {
+        configFile rootProject.file('checkstyle.xml')
+    }
+
+    jacocoTestReport {
+        group = "Reporting"
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination "${buildDir}/reports/coverage"
+        }
+        dependsOn test
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs += '-parameters'
+    }
+
+    task integrationTest(type: Test) {
+        testClassesDir = sourceSets.integrationTest.output.classesDir
+        classpath = sourceSets.integrationTest.runtimeClasspath
+    }
+
+    check.dependsOn integrationTest
+    integrationTest.mustRunAfter test
+    check.dependsOn jacocoTestReport
+}
+
+task buildAll << {
+    logger.lifecycle('building releasables')
+}
+
+release {
+    buildTasks = ['buildAll']
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14'
+}
+

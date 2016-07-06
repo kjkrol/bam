@@ -1,7 +1,5 @@
 package bam;
 
-import org.lwjgl.Sys;
-
 /**
  * @author Karol Krol
  * @version 1.0.0

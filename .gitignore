@@ -59,6 +59,11 @@ Thumbs.db
 #########
 target
 
+# Gradle #
+##########
+build
+.gradle
+
 # Checkstyle #
 ##############
 .checkstyle

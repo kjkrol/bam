@@ -8,8 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath('io.spring.gradle:dependency-management-plugin:0.5.6.RELEASE')
-        classpath('net.researchgate:gradle-release:2.4.0')
+        classpath group: 'net.researchgate', name: 'gradle-release', version: '2.4.0'
     }
 }
 
@@ -42,12 +41,11 @@ subprojects {
     }
 
     dependencies {
-        compile('org.projectlombok:lombok:1.16.8')
-        compile('org.codehaus.groovy:groovy-all:2.4.6')
-        compile('com.google.guava:guava:19.0')
-	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'        
-	compile('org.apache.commons:commons-lang3:3.4')
-        testCompile('org.spockframework:spock-spring')
+        compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
+        compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
+        compile group: 'com.google.guava', name: 'guava', version: '19.0'
+	    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+        compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     }
 
     checkstyle {

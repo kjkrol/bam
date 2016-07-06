@@ -6,11 +6,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
 public class Oval extends AbstractBamObject {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;

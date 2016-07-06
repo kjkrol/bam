@@ -6,7 +6,7 @@ import bam.GLUtil;
 import bam.objects.AbstractBamObject;
 import bam.objects.Oval;
 import bam.objects.Rect;
-import lombok.Data;
+import lombok.Getter;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -22,24 +22,49 @@ import org.newdawn.slick.opengl.Texture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-@Data
 public class BamSampleApp extends AbstractBamPlane {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BamSampleApp.class);
+
+    private static final float DEFAULT_VELOCITY_VALUE = 5000f;
+
+    private static final float PI_RAD = 180f;
+
+    private static final float RAD_TO_ANGLE_COEFFICIENT = (float) (Math.PI / PI_RAD);
+
+    private static final float BORDER_WALL_WITH = 10f;
+
+    private static final float BORDER_WALL_DENSITY = 10f;
+
+    private static final float BORDER_WALL_FRICTION = 0.5f;
+
+    private static final float BORDER_WALL_RESTITUTION = 0.1f;
+
+    private static final float BALL_INIT_X_POS = 200f;
+
+    private static final float BALL_INIT_Y_POS = 400f;
+
+    private static final float BALL_INIT_RADIUS = 12;
+
+    private static final float BRIDGE_START_X_POS = 120;
+
+    private static final float BRIDGE_START_Y_POS = 120;
+
+    private static final float BRIDGE_WIDTH = 100;
+
+    private static final float BRIDGE_THICKNESS = 2;
+
+    private static final int BRIDGE_COMPONENTS_NUMBER = 40;
+
+    private static final int BRIDGE_MAX_ANGLE = 3;
 
     public static void main(String[] args) {
         final BamSampleApp bamSampleApp = new BamSampleApp();
         bamSampleApp.start();
     }
 
-    private Optional<AbstractBamObject> controlledBamObject;
+    @Getter
+    private AbstractBamObject controlledBamObject;
 
     @Override
     public void initTextures() {
@@ -50,22 +75,23 @@ public class BamSampleApp extends AbstractBamPlane {
     @Override
     public void initPlane() {
         /* add border walls */
-        this.addBorderWalls(10);
+        this.addBorderWalls(BORDER_WALL_WITH);
 
         /* add bamObjects */
         final FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.density = 10.0f;
-        fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.1f;
+        fixtureDef.density = BORDER_WALL_DENSITY;
+        fixtureDef.friction = BORDER_WALL_FRICTION;
+        fixtureDef.restitution = BORDER_WALL_RESTITUTION;
         final Oval oval = this.getBamObjectsFactory().createOval(BamObjectsFactory.ovalBuilder()
                 .bodyType(BodyType.DYNAMIC)
                 .color(ReadableColor.RED)
-                .position(new Vec2(200f, 400f))
-                .radius(12)
+                .position(new Vec2(BALL_INIT_X_POS, BALL_INIT_Y_POS))
+                .radius(BALL_INIT_RADIUS)
                 .fixtureDef(fixtureDef));
-        this.controlledBamObject = Optional.of(oval);
+        this.controlledBamObject = oval;
 
-        this.buildElasticBridge(new Vec2(120, 140), 100, 2, 40, 3);
+        this.buildElasticBridge(new Vec2(BRIDGE_START_X_POS, BRIDGE_START_Y_POS), BRIDGE_WIDTH, BRIDGE_THICKNESS,
+                BRIDGE_COMPONENTS_NUMBER, BRIDGE_MAX_ANGLE);
 
     }
 
@@ -104,17 +130,20 @@ public class BamSampleApp extends AbstractBamPlane {
         float xVel = 0.0f;
         float yVel = 0.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
-            xVel -= 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
-            xVel += 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP))
-            yVel += 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-            yVel -= 50000.0f;
-
+        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+            xVel -= DEFAULT_VELOCITY_VALUE;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+            xVel += DEFAULT_VELOCITY_VALUE;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+            yVel += DEFAULT_VELOCITY_VALUE;
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+            yVel -= DEFAULT_VELOCITY_VALUE;
+        }
         final Vec2 velocity = new Vec2(xVel, yVel);
-        this.controlledBamObject.ifPresent(controlledObj -> controlledObj.move(controlledObj, velocity, freq));
+        getControlledBamObject().move(getControlledBamObject(), velocity, freq);
     }
 
     private void addBorderWalls(final float borderWidth) {
@@ -198,8 +227,8 @@ public class BamSampleApp extends AbstractBamPlane {
         final float width1 = rect1.getWidth();
         final float width2 = rect2.getWidth();
 
-        revoluteJointDef.lowerAngle = (float) (-maxAngle * Math.PI / 180.f);
-        revoluteJointDef.upperAngle = (float) (+maxAngle * Math.PI / 180.f);
+        revoluteJointDef.lowerAngle = -maxAngle * RAD_TO_ANGLE_COEFFICIENT;
+        revoluteJointDef.upperAngle = +maxAngle * RAD_TO_ANGLE_COEFFICIENT;
 
         revoluteJointDef.localAnchorA.set(+width1, 0);
         revoluteJointDef.localAnchorB.set(-width2, 0);

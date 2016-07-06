@@ -62,7 +62,7 @@ public class BamSampleApp extends AbstractBamPlane {
                 .color(ReadableColor.RED)
                 .position(new Vec2(200f, 400f))
                 .radius(12)
-                .templateFixture(fixtureDef));
+                .fixtureDef(fixtureDef));
         this.controlledBamObject = Optional.of(oval);
 
         this.buildElasticBridge(new Vec2(120, 140), 100, 2, 40, 3);
@@ -119,28 +119,28 @@ public class BamSampleApp extends AbstractBamPlane {
                 .width(WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(borderWidth)
                 .height(WINDOW_HEIGHT)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(WINDOW_WIDTH, 0))
                 .width(borderWidth)
                 .height(WINDOW_HEIGHT)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
     }
 
@@ -154,7 +154,7 @@ public class BamSampleApp extends AbstractBamPlane {
                 .width(componentWidth)
                 .height(thickness)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.ORANGE)
         );
         Rect rect2;
@@ -164,7 +164,7 @@ public class BamSampleApp extends AbstractBamPlane {
                     .width(componentWidth)
                     .height(thickness)
                     .bodyType(BodyType.DYNAMIC)
-                    .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                    .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                     .color(ReadableColor.GREEN)
             );
 
@@ -178,7 +178,7 @@ public class BamSampleApp extends AbstractBamPlane {
                 .width(componentWidth)
                 .height(thickness)
                 .bodyType(BodyType.STATIC)
-                .templateFixture(Rect.DEFAULT_FIXTURE_DEF)
+                .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.ORANGE));
         this.join(rect1, rect2, maxAngle);
     }

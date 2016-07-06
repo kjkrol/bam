@@ -34,7 +34,7 @@ public class BamObjectsFactory {
     }
 
     private <T extends AbstractBamObject> T create(final Vec2 position, final float[] params, final BodyType bodyType,
-                                                   final FixtureDef templateFixture, Texture texture, ReadableColor color,
+                                                   final FixtureDef fixtureDef, Texture texture, ReadableColor color,
                                                    final Function<float[], Shape> shapeFunction,
                                                    final Function4Args<T, Body, Texture, ReadableColor, float[]> bamObjConstructor) {
         final Shape shape = shapeFunction.apply(params);
@@ -43,7 +43,7 @@ public class BamObjectsFactory {
                         .position(position)
                         .bodyType(bodyType)
                         .shape(shape)
-                        .templateFixture(templateFixture)
+                        .templateFixture(fixtureDef)
         );
         final T t = bamObjConstructor.apply(body, texture, color, params);
         body.setUserData(t);
@@ -61,10 +61,10 @@ public class BamObjectsFactory {
 
     @Builder(builderMethodName = "rectBuilder")
     private static Rect buildRect(Vec2 position, float width, float height, BodyType bodyType,
-                                  FixtureDef templateFixture, Texture texture, ReadableColor color,
+                                  FixtureDef fixtureDef, Texture texture, ReadableColor color,
                                   BamObjectsFactory bamObjectsFactory) {
 
-        return bamObjectsFactory.create(position, new float[]{width, height}, bodyType, templateFixture, texture, color,
+        return bamObjectsFactory.create(position, new float[]{width, height}, bodyType, fixtureDef, texture, color,
                 (float[] params) -> {
                     final PolygonShape boxShape = new PolygonShape();
                     boxShape.setAsBox(params[0], params[1]);
@@ -75,9 +75,9 @@ public class BamObjectsFactory {
 
     @Builder(builderMethodName = "ovalBuilder")
     private static Oval createOval(Vec2 position, float radius, BodyType bodyType,
-                                   FixtureDef templateFixture, Texture texture, ReadableColor color,
+                                   FixtureDef fixtureDef, Texture texture, ReadableColor color,
                                    BamObjectsFactory bamObjectsFactory) {
-        return bamObjectsFactory.create(position, new float[]{radius}, bodyType, templateFixture, texture, color,
+        return bamObjectsFactory.create(position, new float[]{radius}, bodyType, fixtureDef, texture, color,
                 (float[] params) -> {
                     final Shape circleShape = new CircleShape();
                     circleShape.setRadius(params[0]);

@@ -57,7 +57,7 @@ public class BamSampleApp extends AbstractBamPlane {
         fixtureDef.density = 10.0f;
         fixtureDef.friction = 0.5f;
         fixtureDef.restitution = 0.1f;
-        final Oval oval = this.bamObjectsFactory.createOval(BamObjectsFactory.ovalBuilder()
+        final Oval oval = this.getBamObjectsFactory().createOval(BamObjectsFactory.ovalBuilder()
                 .bodyType(BodyType.DYNAMIC)
                 .color(ReadableColor.RED)
                 .position(new Vec2(200f, 400f))
@@ -104,38 +104,42 @@ public class BamSampleApp extends AbstractBamPlane {
         float xVel = 0.0f;
         float yVel = 0.0f;
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) xVel -= 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) xVel += 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) yVel += 50000.0f;
-        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) yVel -= 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT))
+            xVel -= 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+            xVel += 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_UP))
+            yVel += 50000.0f;
+        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+            yVel -= 50000.0f;
 
         final Vec2 velocity = new Vec2(xVel, yVel);
         this.controlledBamObject.ifPresent(controlledObj -> controlledObj.move(controlledObj, velocity, freq));
     }
 
     private void addBorderWalls(final float borderWidth) {
-        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, AbstractBamPlane.WINDOW_HEIGHT))
                 .width(AbstractBamPlane.WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(AbstractBamPlane.WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(borderWidth)
                 .height(AbstractBamPlane.WINDOW_HEIGHT)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
-        this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(AbstractBamPlane.WINDOW_WIDTH, 0))
                 .width(borderWidth)
                 .height(AbstractBamPlane.WINDOW_HEIGHT)
@@ -149,7 +153,7 @@ public class BamSampleApp extends AbstractBamPlane {
 
         final float componentWidth = width / (float) componentsNumber;
 
-        Rect rect1 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        Rect rect1 = this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(startPosition)
                 .width(componentWidth)
                 .height(thickness)
@@ -159,7 +163,7 @@ public class BamSampleApp extends AbstractBamPlane {
         );
         Rect rect2;
         for (int index = 1; index < componentsNumber - 1; ++index) {
-            rect2 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+            rect2 = this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                     .position(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()))
                     .width(componentWidth)
                     .height(thickness)
@@ -168,12 +172,11 @@ public class BamSampleApp extends AbstractBamPlane {
                     .color(ReadableColor.GREEN)
             );
 
-
             this.join(rect1, rect2, maxAngle);
             rect1 = rect2;
         }
 
-        rect2 = this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
+        rect2 = this.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(rect1.getXPos() + componentWidth * 2, rect1.getYPos()))
                 .width(componentWidth)
                 .height(thickness)
@@ -200,7 +203,7 @@ public class BamSampleApp extends AbstractBamPlane {
 
         revoluteJointDef.localAnchorA.set(+width1, 0);
         revoluteJointDef.localAnchorB.set(-width2, 0);
-        world.createJoint(revoluteJointDef);
+        this.getWorld().createJoint(revoluteJointDef);
     }
 
 }

@@ -4,12 +4,7 @@ import bam.commons.NativeLibsLoaderUtil;
 
 import java.util.Optional;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-public final class NativeOpenGLLoaderUtil {
+final class NativeOpenGLLoaderUtil {
 
     private static final String WINDOWS_DIR = "windows/";
     private static final String MACOSX_DIR = "macosx/";
@@ -18,27 +13,32 @@ public final class NativeOpenGLLoaderUtil {
     private NativeOpenGLLoaderUtil() {
 
     }
-    /**
-     *
-     * @param osName
-     * @param osArch
-     * @return
-     */
-    public static Optional<NativeLibsLoaderUtil.LibsWithSubDir> load(final String osName, final String osArch) {
+
+    static Optional<NativeLibsLoaderUtil.LibsWithSubDir> load(final String osName, final String osArch) {
 
         if (osName.startsWith(NativeLibsLoaderUtil.MAC)) {
-            return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(new String[]{"libjinput-osx.dylib", "liblwjgl.dylib", "openal.dylib"}, MACOSX_DIR));
+            return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(
+                    new String[]{"libjinput-osx.dylib", "liblwjgl.dylib", "openal.dylib"},
+                    MACOSX_DIR));
         } else if (osName.startsWith(NativeLibsLoaderUtil.WIN)) {
             if (osArch.equalsIgnoreCase(NativeLibsLoaderUtil.X86)) {
-                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(new String[]{"jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll"}, WINDOWS_DIR));
+                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(
+                        new String[]{"jinput-dx8.dll", "jinput-raw.dll", "lwjgl.dll", "OpenAL32.dll"},
+                        WINDOWS_DIR));
             } else {
-                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(new String[]{"jinput-dx8_64.dll", "jinput-raw_64.dll", "lwjgl64.dll", "OpenAL64.dll"}, WINDOWS_DIR));
+                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(
+                        new String[]{"jinput-dx8_64.dll", "jinput-raw_64.dll", "lwjgl64.dll", "OpenAL64.dll"},
+                        WINDOWS_DIR));
             }
         } else if (osName.startsWith(NativeLibsLoaderUtil.LINUX)) {
             if (osArch.equalsIgnoreCase(NativeLibsLoaderUtil.I386)) {
-                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(new String[]{"libjinput-linux.so", "liblwjgl.so", "libopenal.so"}, LINUX_DIR));
+                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(
+                        new String[]{"libjinput-linux.so", "liblwjgl.so", "libopenal.so"},
+                        LINUX_DIR));
             } else {
-                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(new String[]{"libjinput-linux64.so", "liblwjgl64.so", "libopenal64.so"}, LINUX_DIR));
+                return Optional.of(new NativeLibsLoaderUtil.LibsWithSubDir(
+                        new String[]{"libjinput-linux64.so", "liblwjgl64.so", "libopenal64.so"},
+                        LINUX_DIR));
             }
         }
         return Optional.empty();

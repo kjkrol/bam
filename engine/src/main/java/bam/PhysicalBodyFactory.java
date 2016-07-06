@@ -3,7 +3,11 @@ package bam;
 import lombok.Builder;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
+import org.jbox2d.dynamics.FixtureDef;
+import org.jbox2d.dynamics.World;
 
 /**
  * @author Karol Krol
@@ -17,7 +21,6 @@ public class PhysicalBodyFactory {
     public PhysicalBodyFactory(final World world) {
         this.world = world;
     }
-
 
     public Body createBody(BodyBuilder builder) {
         return builder.physicalBodyFactory(this).build();

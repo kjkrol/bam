@@ -1,7 +1,7 @@
 group = 'kjkrol.bam'
 
 apply plugin: 'net.researchgate.release'
-apply plugin:'java'
+apply plugin: 'java'
 
 buildscript {
     repositories {
@@ -44,7 +44,7 @@ subprojects {
         compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
         compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.6'
         compile group: 'com.google.guava', name: 'guava', version: '19.0'
-	    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.4'
     }
 

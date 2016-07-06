@@ -10,7 +10,6 @@ import org.jbox2d.common.Vec2;
 public interface ControllableBamObject {
 
     /**
-     *
      * @param abstractBamObject
      * @param delVelocity
      * @param freq

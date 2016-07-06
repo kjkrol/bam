@@ -1,13 +1,12 @@
 package bam.objects;
 
 import lombok.Data;
+import lombok.Getter;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
-
-import java.util.Optional;
 
 /**
  * @author Karol Krol
@@ -19,17 +18,30 @@ public abstract class AbstractBamObject implements ControllableBamObject {
 
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
 
+    private static final float PI_RAD = 180f;
+
+    private static final float ANGLE_TO_RAD_COEFFICIENT = (float) (PI_RAD / Math.PI);
+
+    private static final float DEFAULT_DENSITY_COEFFICIENT = 1.0f;
+
+    private static final float DEFAULT_FRICTION_COEFFICIENT = 0.7f;
+
+    private static final float DEFAULT_RESTITUTION_COEFFICIENT = 0.5f;
+
     static {
-        DEFAULT_FIXTURE_DEF.density = 1.0f;
-        DEFAULT_FIXTURE_DEF.friction = 0.7f;
-        DEFAULT_FIXTURE_DEF.restitution = 0.5f;
+        DEFAULT_FIXTURE_DEF.density = DEFAULT_DENSITY_COEFFICIENT;
+        DEFAULT_FIXTURE_DEF.friction = DEFAULT_FRICTION_COEFFICIENT;
+        DEFAULT_FIXTURE_DEF.restitution = DEFAULT_RESTITUTION_COEFFICIENT;
     }
 
-    protected final Body body;
+    @Getter
+    private final Body body;
 
-    protected final Texture texture;
+    @Getter
+    private final Texture texture;
 
-    protected final ReadableColor color;
+    @Getter
+    private final ReadableColor color;
 
     protected abstract void drawTexture();
 
@@ -40,12 +52,12 @@ public abstract class AbstractBamObject implements ControllableBamObject {
         GL11.glLoadIdentity();
         GL11.glTranslatef(getXPos(), getYPos(), 0);
 
-        float angle = (float) (body.getAngle() * 180 / Math.PI);
+        final float angle = body.getAngle() * ANGLE_TO_RAD_COEFFICIENT;
         GL11.glRotatef(angle, 0, 0, 1);
         ReadableColor color1 = null != this.color ? color : ReadableColor.WHITE;
         GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());
 
-        if(null != this.texture) {
+        if (null != this.texture) {
             GL11.glEnable(GL11.GL_TEXTURE_2D);
             this.texture.bind();
             this.drawTexture();
@@ -63,6 +75,5 @@ public abstract class AbstractBamObject implements ControllableBamObject {
     public float getYPos() {
         return body.getPosition().y;
     }
-
 
 }

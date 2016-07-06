@@ -5,6 +5,7 @@ import bam.objects.AbstractBamObject;
 import bam.objects.Oval;
 import bam.objects.Rect;
 import lombok.Builder;
+import lombok.Getter;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
@@ -24,8 +25,11 @@ import java.util.function.Function;
  */
 public class BamObjectsFactory {
 
-    protected final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody;
-    protected final Function<AbstractBamObject, Boolean> bamObjectListAppender;
+    @Getter
+    private final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody;
+
+    @Getter
+    private final Function<AbstractBamObject, Boolean> bamObjectListAppender;
 
     public BamObjectsFactory(final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody,
                              final Function<AbstractBamObject, Boolean> appendBamObjectsList) {
@@ -71,7 +75,6 @@ public class BamObjectsFactory {
                     return boxShape;
                 }, Rect::new);
     }
-
 
     @Builder(builderMethodName = "ovalBuilder")
     private static Oval createOval(Vec2 position, float radius, BodyType bodyType,

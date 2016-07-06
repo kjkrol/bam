@@ -10,7 +10,8 @@ import org.newdawn.slick.util.ResourceLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+
+import java.awt.Font;
 import java.io.IOException;
 
 /**

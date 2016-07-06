@@ -115,15 +115,15 @@ public class BamSampleApp extends AbstractBamPlane {
 
     private void addBorderWalls(final float borderWidth) {
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(0, WINDOW_HEIGHT))
-                .width(WINDOW_WIDTH)
+                .position(new Vec2(0, AbstractBamPlane.WINDOW_HEIGHT))
+                .width(AbstractBamPlane.WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
-                .width(WINDOW_WIDTH)
+                .width(AbstractBamPlane.WINDOW_WIDTH)
                 .height(borderWidth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
@@ -131,14 +131,14 @@ public class BamSampleApp extends AbstractBamPlane {
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(borderWidth)
-                .height(WINDOW_HEIGHT)
+                .height(AbstractBamPlane.WINDOW_HEIGHT)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));
         this.bamObjectsFactory.createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(WINDOW_WIDTH, 0))
+                .position(new Vec2(AbstractBamPlane.WINDOW_WIDTH, 0))
                 .width(borderWidth)
-                .height(WINDOW_HEIGHT)
+                .height(AbstractBamPlane.WINDOW_HEIGHT)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(Rect.DEFAULT_FIXTURE_DEF)
                 .color(ReadableColor.YELLOW));

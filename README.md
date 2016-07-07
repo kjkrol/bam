@@ -6,16 +6,16 @@ The physics engine is supported by a **JBox2d** library.
 
 ## Requirements
 1. JRE 8.x installed
-2. Maven 3.x installed
+2. Gradle 2.x installed
 
 ## Building
-Project building process is configured and managed by Maven 3.x.
+Project building process is configured and managed by Gradle 2.x
 
 ## Sample
 There is an option to build executable jar file with dependencies:  
-```mvn clean compile assembly:single```  
+```gradle build```  
 To run sample app type:  
-```java -jar target/bam-1.0.0-jar-with-dependencies.jar```
+```java -jar samples/build/libs/samples-1.0.0.jar```
 
 ## References
 1. LWJGL https://github.com/LWJGL/lwjgl3

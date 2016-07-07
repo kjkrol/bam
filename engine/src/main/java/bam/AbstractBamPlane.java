@@ -1,47 +1,41 @@
 package bam;
 
-import bam.commons.NativeLibsLoaderUtil;
-import bam.objects.AbstractBamObject;
-import lombok.Data;
+import bam.model.BaseBamType;
+import bam.opengl.GLUtil;
+import bam.opengl.OpenGlLoader;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.jbox2d.dynamics.World;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-@Data
+
+@ToString
+@Slf4j
 public abstract class AbstractBamPlane {
 
     static {
-        NativeLibsLoaderUtil.loadLibs(NativeOpenGLLoaderUtil::load);
+        new OpenGlLoader().load();
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBamPlane.class);
-
-    protected static final String TITLE = "BAM!";
     protected static final int WINDOW_WIDTH = 640;
     protected static final int WINDOW_HEIGHT = 480;
-
-    protected static final int FPS_LIMIT = 60 * 4;
-    protected static final int VELOCITY_ITERATIONS = 10;
-    protected static final int POSITION_ITERATIONS = 10;
+    private static final String TITLE = "BAM!";
+    private static final int FPS_LIMIT = 60 * 4;
+    private static final int VELOCITY_ITERATIONS = 10;
+    private static final int POSITION_ITERATIONS = 10;
 
     private static final float TIME_AMOUNT_FACTOR_COEFFICIENT = 1000.f;
     private static final float TIME_AMOUNT_FACTOR = 1.0f / TIME_AMOUNT_FACTOR_COEFFICIENT;
 
     @Getter
-    private final List<AbstractBamObject> bamObjects = new ArrayList<>();
+    private final List<BaseBamType> bamObjects = new ArrayList<>();
 
     @Getter
     private final World world;
@@ -64,7 +58,7 @@ public abstract class AbstractBamPlane {
         this.initPlane();
     }
 
-    public void start() {
+    protected void start() {
         this.getStopWatch().getDelta();
         while (!Display.isCloseRequested()) {
             final int delta = this.getStopWatch().getDelta();
@@ -75,7 +69,7 @@ public abstract class AbstractBamPlane {
             /* Clear The Screen And The Depth Buffer */
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glPushMatrix();
-            this.getBamObjects().stream().forEach(AbstractBamObject::draw);
+            this.getBamObjects().stream().forEach(BaseBamType::draw);
             GL11.glLoadIdentity();
             GL11.glPopMatrix();
             GL11.glFlush();
@@ -94,7 +88,7 @@ public abstract class AbstractBamPlane {
 
     protected abstract void initPlane();
 
-    protected void initGL() {
+    private void initGL() {
         try {
             final DisplayMode mode = GLUtil.getDisplayMode(WINDOW_WIDTH, WINDOW_HEIGHT);
             Display.setDisplayMode(mode);
@@ -121,7 +115,7 @@ public abstract class AbstractBamPlane {
 
             GL11.glLoadIdentity();
         } catch (LWJGLException e) {
-            LOGGER.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             System.exit(0);
         }
     }

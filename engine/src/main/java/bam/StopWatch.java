@@ -1,11 +1,6 @@
 package bam;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-public class StopWatch {
+class StopWatch {
 
     /**
      * time at last frame
@@ -18,7 +13,7 @@ public class StopWatch {
      *
      * @return milliseconds passed since last frame
      */
-    public int getDelta() {
+    int getDelta() {
         final long time = System.currentTimeMillis();
         final int delta = (int) (time - this.lastMeasurement);
         this.lastMeasurement = time;

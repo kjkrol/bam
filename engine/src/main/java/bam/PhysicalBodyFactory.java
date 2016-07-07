@@ -9,20 +9,15 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.World;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-public class PhysicalBodyFactory {
+class PhysicalBodyFactory {
 
     private final World world;
 
-    public PhysicalBodyFactory(final World world) {
+    PhysicalBodyFactory(final World world) {
         this.world = world;
     }
 
-    public Body createBody(BodyBuilder builder) {
+    Body createBody(BodyBuilder builder) {
         return builder.physicalBodyFactory(this).build();
     }
 

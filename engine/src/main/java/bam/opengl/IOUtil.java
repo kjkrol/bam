@@ -1,4 +1,6 @@
-package bam.commons;
+package bam.opengl;
+
+import lombok.NoArgsConstructor;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,27 +11,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * This <code>IOUtil</code> class provides static utility method for copying the data from one stream to another.
  * <p/>
- *
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
  */
-public class IOUtil {
+@NoArgsConstructor
+final class IOUtil {
 
     /**
      * The default buffer size (32 kB)
      */
-    public static final int BUFFER_SIZE = 1024 * 1024 * 32;
+    private static final int BUFFER_SIZE = 1024 * 1024 * 32;
 
-    public static final String ERR_MSG_PATTERN_EXCEEDED_MAXIMUM_SIZE_OF_THE_BUFFER = "Exceeded maximum size of the buffer [%d/%d]";
+    private static final String ERR_MSG_PATTERN_EXCEEDED_MAXIMUM_SIZE_OF_THE_BUFFER = "Exceeded maximum size of the buffer [%d/%d]";
 
-    public static final String OPERATION_HAS_BEEN_CANCELLED_BY_OTHER_PROCESS = "Operation has been cancelled by other process.";
+    private static final String OPERATION_HAS_BEEN_CANCELLED_BY_OTHER_PROCESS = "Operation has been cancelled by other process.";
 
-    /**
-     * Hidden constructor.
-     */
-    private IOUtil() {
-    }
 
     /**
      * Copies bytes from an InputStream to an OutputStream.

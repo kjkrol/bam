@@ -1,5 +1,7 @@
 package bam.opengl;
 
+import bam.common.NativeLibrariesLoader;
+
 public class OpenGlLoader {
 
     /**
@@ -40,45 +42,45 @@ public class OpenGlLoader {
     public void load() {
 
         if (osName.startsWith(MAC)) {
-            NativeLibsLoader.builder()
-                    .libsName("libjinput-osx.dylib")
-                    .libsName("liblwjgl.dylib")
-                    .libsName("openal.dylib")
-                    .subDir(MACOSX_DIR)
-                    .build().loadLibs();
+            NativeLibrariesLoader.builder()
+                    .libName("libjinput-osx.dylib")
+                    .libName("liblwjgl.dylib")
+                    .libName("openal.dylib")
+                    .resourcesDirectoryWithingJarFile(MACOSX_DIR)
+                    .build().loadLibraries();
         } else if (osName.startsWith(WIN)) {
             if (osArch.equalsIgnoreCase(X86)) {
-                NativeLibsLoader.builder()
-                        .libsName("jinput-dx8.dll")
-                        .libsName("jinput-raw.dll")
-                        .libsName("lwjgl.dll")
-                        .libsName("OpenAL32.dll")
-                        .subDir(WINDOWS_DIR)
-                        .build().loadLibs();
+                NativeLibrariesLoader.builder()
+                        .libName("jinput-dx8.dll")
+                        .libName("jinput-raw.dll")
+                        .libName("lwjgl.dll")
+                        .libName("OpenAL32.dll")
+                        .resourcesDirectoryWithingJarFile(WINDOWS_DIR)
+                        .build().loadLibraries();
             } else {
-                NativeLibsLoader.builder()
-                        .libsName("jinput-dx8_64.dll")
-                        .libsName("jinput-raw_64.dll")
-                        .libsName("lwjgl64.dll")
-                        .libsName("OpenAL64.dll")
-                        .subDir(WINDOWS_DIR)
-                        .build().loadLibs();
+                NativeLibrariesLoader.builder()
+                        .libName("jinput-dx8_64.dll")
+                        .libName("jinput-raw_64.dll")
+                        .libName("lwjgl64.dll")
+                        .libName("OpenAL64.dll")
+                        .resourcesDirectoryWithingJarFile(WINDOWS_DIR)
+                        .build().loadLibraries();
             }
         } else if (osName.startsWith(LINUX)) {
             if (osArch.equalsIgnoreCase(I386)) {
-                NativeLibsLoader.builder()
-                        .libsName("libjinput-linux.so")
-                        .libsName("liblwjgl.so")
-                        .libsName("libopenal.so")
-                        .subDir(LINUX_DIR)
-                        .build().loadLibs();
+                NativeLibrariesLoader.builder()
+                        .libName("libjinput-linux.so")
+                        .libName("liblwjgl.so")
+                        .libName("libopenal.so")
+                        .resourcesDirectoryWithingJarFile(LINUX_DIR)
+                        .build().loadLibraries();
             } else {
-                NativeLibsLoader.builder()
-                        .libsName("libjinput-linux64.so")
-                        .libsName("liblwjgl64.so")
-                        .libsName("libopenal64.so")
-                        .subDir(LINUX_DIR)
-                        .build().loadLibs();
+                NativeLibrariesLoader.builder()
+                        .libName("libjinput-linux64.so")
+                        .libName("liblwjgl64.so")
+                        .libName("libopenal64.so")
+                        .resourcesDirectoryWithingJarFile(LINUX_DIR)
+                        .build().loadLibraries();
             }
         }
     }

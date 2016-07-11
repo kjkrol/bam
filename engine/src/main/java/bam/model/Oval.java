@@ -1,4 +1,4 @@
-package bam.objects;
+package bam.model;
 
 import lombok.Getter;
 import org.jbox2d.dynamics.Body;
@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-public class Oval extends AbstractBamObject {
+public class Oval extends BaseBamType {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
 

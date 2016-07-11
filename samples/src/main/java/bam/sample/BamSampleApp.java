@@ -2,11 +2,12 @@ package bam.sample;
 
 import bam.AbstractBamPlane;
 import bam.BamObjectsFactory;
-import bam.GLUtil;
-import bam.objects.AbstractBamObject;
-import bam.objects.Oval;
-import bam.objects.Rect;
+import bam.opengl.GLUtil;
+import bam.model.BaseBamType;
+import bam.model.Oval;
+import bam.model.Rect;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
@@ -19,12 +20,10 @@ import org.jbox2d.dynamics.joints.RevoluteJointDef;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class BamSampleApp extends AbstractBamPlane {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BamSampleApp.class);
 
     private static final float DEFAULT_VELOCITY_VALUE = 5000f;
 
@@ -64,7 +63,7 @@ public class BamSampleApp extends AbstractBamPlane {
     }
 
     @Getter
-    private AbstractBamObject controlledBamObject;
+    private BaseBamType controlledBamObject;
 
     @Override
     public void initTextures() {

@@ -1,20 +1,18 @@
-package bam.objects;
+package bam.model;
 
-import lombok.Data;
+import bam.ControllableBamObject;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
-@Data
-public abstract class AbstractBamObject implements ControllableBamObject {
+@ToString
+@RequiredArgsConstructor
+public abstract class BaseBamType implements ControllableBamObject {
 
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
 

@@ -1,9 +1,9 @@
 package bam;
 
-import bam.commons.Function4Args;
-import bam.objects.AbstractBamObject;
-import bam.objects.Oval;
-import bam.objects.Rect;
+import bam.common.Function4Args;
+import bam.model.BaseBamType;
+import bam.model.Oval;
+import bam.model.Rect;
 import lombok.Builder;
 import lombok.Getter;
 import org.jbox2d.collision.shapes.CircleShape;
@@ -18,29 +18,25 @@ import org.newdawn.slick.opengl.Texture;
 
 import java.util.function.Function;
 
-/**
- * @author Karol Krol
- * @version 1.0.0
- * @since 1.0.0
- */
+
 public class BamObjectsFactory {
 
     @Getter
     private final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody;
 
     @Getter
-    private final Function<AbstractBamObject, Boolean> bamObjectListAppender;
+    private final Function<BaseBamType, Boolean> bamObjectListAppender;
 
-    public BamObjectsFactory(final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody,
-                             final Function<AbstractBamObject, Boolean> appendBamObjectsList) {
+    BamObjectsFactory(final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody,
+                             final Function<BaseBamType, Boolean> appendBamObjectsList) {
         this.createBody = createBody;
         this.bamObjectListAppender = appendBamObjectsList;
     }
 
-    private <T extends AbstractBamObject> T create(final Vec2 position, final float[] params, final BodyType bodyType,
-                                                   final FixtureDef fixtureDef, Texture texture, ReadableColor color,
-                                                   final Function<float[], Shape> shapeFunction,
-                                                   final Function4Args<T, Body, Texture, ReadableColor, float[]> bamObjConstructor) {
+    private <T extends BaseBamType> T create(final Vec2 position, final float[] params, final BodyType bodyType,
+                                             final FixtureDef fixtureDef, Texture texture, ReadableColor color,
+                                             final Function<float[], Shape> shapeFunction,
+                                             final Function4Args<T, Body, Texture, ReadableColor, float[]> bamObjConstructor) {
         final Shape shape = shapeFunction.apply(params);
         final Body body = this.createBody.apply(
                 PhysicalBodyFactory.builder()

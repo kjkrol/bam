@@ -1,4 +1,4 @@
-package bam.objects;
+package bam.model;
 
 import lombok.Getter;
 import org.jbox2d.dynamics.Body;
@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 import org.newdawn.slick.opengl.Texture;
 
-public class Rect extends AbstractBamObject {
+public class Rect extends BaseBamType {
 
     public static final int DEFAULT_SIZE = 30;
 

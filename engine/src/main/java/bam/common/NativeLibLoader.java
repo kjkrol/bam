@@ -10,21 +10,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
 
 @Slf4j
 class NativeLibLoader {
     private static final String JAVA_IO_TMPDIR = "java.io.tmpdir";
     private static final String JAVA_LIBRARY_PATH = "java.library.path";
     private static final String SYS_PATHS = "sys_paths";
-    private final String libraryName;
-    private final String resourcesDirectoryWithingJarFile;
+    private final Path libraryPath;
 
     private File osTempDirectory;
 
     @Builder
-    private NativeLibLoader(final String libraryName, final String resourcesDirectoryWithingJarFile) {
-        this.libraryName = libraryName;
-        this.resourcesDirectoryWithingJarFile = resourcesDirectoryWithingJarFile + "/";
+    private NativeLibLoader(final Path libraryPath) {
+        this.libraryPath = libraryPath;
     }
 
     void loadLibraries() {
@@ -42,22 +41,21 @@ class NativeLibLoader {
 
     private void saveLibraryIntoTemporaryOsSpace() {
         try {
-            saveLibraryIntoTemporaryOsSpace(libraryName);
+            saveLibraryIntoTemporaryOsSpace(libraryPath);
         } catch (UnsatisfiedLinkError | IOException e) {
-            log.error("Native library: {} failed to load.\n", libraryName);
+            log.error("Native library: {} failed to load.\n", libraryPath);
             log.error(e.getMessage(), e);
             System.exit(1);
         }
     }
 
-    private void saveLibraryIntoTemporaryOsSpace(final String libraryName) throws IOException {
+    private void saveLibraryIntoTemporaryOsSpace(final Path libraryPath) throws IOException {
         final InputStream in = initInputStreamToResourceFromJar(libraryName);
         final OutputStream out = initOutputStreamToTemporaryFile(libraryName);
         IOUtils.copy(in, out);
     }
 
     private InputStream initInputStreamToResourceFromJar(final String libraryName) {
-        final String path = resourcesDirectoryWithingJarFile + libraryName;
         return NativeLibLoader.class.getClassLoader().getResourceAsStream(path);
     }
 

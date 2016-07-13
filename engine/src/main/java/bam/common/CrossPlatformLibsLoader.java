@@ -10,9 +10,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -35,7 +33,8 @@ public class CrossPlatformLibsLoader {
     private static final String MAC_OSX_DIR = ROOT_LIB_DIR + "macosx/";
     private static final String WINDOWS_DIR = ROOT_LIB_DIR + "windows/";
     private static final String LINUX_DIR = ROOT_LIB_DIR + "linux/";
-    private final Set<String> libs = new HashSet<>();
+
+    private final Set<Path> libs = new HashSet<>();
 
     public void loadNativeLibs() {
         final String osName = System.getProperty(OS_NAME).toLowerCase();
@@ -55,57 +54,27 @@ public class CrossPlatformLibsLoader {
                 scanPath(LINUX_DIR + X86);
             }
         }
-        traverseLibs(libs, MAC_OSX_DIR + X64);
+        traverseLibs(libs);
     }
 
     private void scanPath(String path) {
-//        try {
-//            final String jarPathName = getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-//            final File jarFile = new File(jarPathName);
-//            final JarFile jar = new JarFile(jarFile);
-//            final Enumeration<JarEntry> entries = jar.entries();
-//            while (entries.hasMoreElements()) {
-//                final JarEntry jarEntry = entries.nextElement();
-//                final String name = jarEntry.getName();
-//                if (name.startsWith(path) && !jarEntry.isDirectory()) {
-//                    final File file = new File(name);
-//                    log.info("found : {}", file.toString());
-//                    libs.add(file.toString());
-//                }
-//            }
-//            jar.close();
-//        } catch (URISyntaxException | IOException e) {
-//            log.error(e.getMessage(), e);
-//        }
         try {
-            URI uri =  getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            Path myPath;
-            log.info("uri.getScheme()={}", uri.getScheme());
-            if (uri.getScheme().equals("file")) {
-                log.info("uri={}", uri);
-                FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
-                myPath = fileSystem.getPath(path);
-            } else {
-                myPath = Paths.get(uri);
-            }
-            Stream<Path> walk = Files.walk(myPath, 1);
-            for (Iterator<Path> it = walk.iterator(); it.hasNext(); ) {
-                System.out.println(it.next());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
+            final URI jarURI = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
+            final Path jarPath = Paths.get(jarURI);
+            final FileSystem fileSystem = FileSystems.newFileSystem(jarPath, null);
+            final Path targetPath = fileSystem.getPath(path);
+            final Stream<Path> walk = Files.walk(targetPath, 1);
+            walk.forEach(libs::add);
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
     }
 
-    private void traverseLibs(Set<String> libsNames, String dir) {
-        libsNames.stream()
-                .forEach(libName -> NativeLibLoader.builder()
-                        .libraryName(libName)
-                        .resourcesDirectoryWithingJarFile(dir)
-                        .build()
-                        .loadLibraries()
-                );
+    private void traverseLibs(Set<Path> libsPaths) {
+        libsPaths.forEach(libPath -> NativeLibLoader.builder()
+                .libraryName(libPath)
+                .build()
+                .loadLibraries()
+        );
     }
 }

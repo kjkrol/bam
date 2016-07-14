@@ -1,6 +1,6 @@
 package bam;
 
-import bam.common.CrossPlatformLibsLoader;
+import bam.common.JarNativeLibsScanner;
 import bam.model.BaseBamType;
 import bam.opengl.GLUtil;
 import lombok.Getter;
@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class AbstractBamPlane {
 
     static {
-        new CrossPlatformLibsLoader().loadNativeLibs();
+        new JarNativeLibsScanner().findAndAddNativeLibsToJavaLibraryPath();
     }
 
     protected static final int WINDOW_WIDTH = 640;

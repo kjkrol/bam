@@ -1,8 +1,8 @@
 package bam;
 
+import bam.common.JarNativeLibsScanner;
 import bam.model.BaseBamType;
 import bam.opengl.GLUtil;
-import bam.opengl.OpenGlLoader;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class AbstractBamPlane {
 
     static {
-        new OpenGlLoader().load();
+        new JarNativeLibsScanner().findAndAddNativeLibsToJavaLibraryPath();
     }
 
     protected static final int WINDOW_WIDTH = 640;

@@ -7,4 +7,7 @@ dependencies {
     compile group: 'org.jbox2d', name: 'jbox2d-library', version: '2.2.1.1'
     // Slf4j
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
+
 }

@@ -47,6 +47,7 @@ subprojects {
 
     checkstyle {
         configFile rootProject.file('checkstyle.xml')
+        toolVersion '6.7'
     }
 
     jacocoTestReport {

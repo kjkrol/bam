@@ -1,5 +1,8 @@
 package bam.opengl;
 
+import bam.common.jarscan.JarFileIntrospectNativeLibsScan;
+import bam.common.jarscan.JavaLibraryPath;
+import bam.common.jarscan.JavaTemporaryDirectory;
 import bam.model.BaseBamType;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +14,7 @@ import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @ToString
 @Slf4j
@@ -29,25 +33,57 @@ public class OpenGlConfiguration {
     @Getter
     private String title = DEFAULT_TITLE;
     @Setter
-    private boolean fullscreen = false;
+    private boolean fullscreen;
+    private AtomicBoolean displayEnable = new AtomicBoolean();
 
-    public OpenGlConfiguration(JarNativeLibsScan jarNativeLibsScan) {
-        jarNativeLibsScan.findAndAddNativeLibsToJavaLibraryPath();
+    public OpenGlConfiguration() {
+        bindRequiredNativeLibraries();
         setupDisplay();
-        setupGL11();
     }
 
-    //TODO: this is not a part of configuration
+    public boolean isDisplayEnabled() {
+        return displayEnable.get() && !Display.isCloseRequested();
+    }
+
+    public void startDisplay() {
+        if (displayEnable.compareAndSet(false, true)) {
+            try {
+                Display.create();
+                setupGL11();
+            } catch (LWJGLException e) {
+                log.info(e.getMessage(), e);
+            }
+        }
+    }
+
+    public void closeDisplay() {
+        if (displayEnable.get()) {
+            Display.destroy();
+        }
+    }
+
+    // this is not a part of configuration
     public void refreshView(List<BaseBamType> bamObjects) {
         /* Clear The Screen And The Depth Buffer */
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glPushMatrix();
-        bamObjects.forEach(BaseBamType::draw);
-        GL11.glLoadIdentity();
-        GL11.glPopMatrix();
-        GL11.glFlush();
-        Display.sync(FPS_LIMIT);
-        Display.update();
+        if (displayEnable.get()) {
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+            GL11.glPushMatrix();
+            bamObjects.forEach(BaseBamType::draw);
+            GL11.glLoadIdentity();
+            GL11.glPopMatrix();
+            GL11.glFlush();
+            Display.sync(FPS_LIMIT);
+            Display.update();
+        }
+    }
+
+    private void bindRequiredNativeLibraries() {
+        final JavaTemporaryDirectory javaTemporaryDirectory = new JavaTemporaryDirectory();
+        if (javaTemporaryDirectory.isTempDirectoryExist()) {
+            final String javaTemporaryDir = javaTemporaryDirectory.getJavaTempDirectory().toString();
+            final JavaLibraryPath javaLibraryPath = new JavaLibraryPath(javaTemporaryDir);
+            new JarFileIntrospectNativeLibsScan().getNativeLibraries().forEach(javaLibraryPath::addFile);
+        }
     }
 
     private void setupDisplay() {
@@ -56,7 +92,6 @@ public class OpenGlConfiguration {
             Display.setDisplayMode(mode);
             Display.setFullscreen(fullscreen);
             Display.setTitle(title);
-            Display.create();
         } catch (LWJGLException e) {
             log.error(e.getMessage(), e);
             System.exit(0);

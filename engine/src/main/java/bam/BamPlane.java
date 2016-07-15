@@ -2,6 +2,7 @@ package bam;
 
 import bam.model.BaseBamType;
 import bam.model.Oval;
+import bam.opengl.OpenGlConfiguration;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package bam.sample;
 
-import bam.OpenGlConfiguration;
+import bam.opengl.OpenGlConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

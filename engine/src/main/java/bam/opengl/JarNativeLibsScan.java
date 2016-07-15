@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @FunctionalInterface
-public interface JarNativeLibsScanning {
+public interface JarNativeLibsScan {
 
     void findAndAddNativeLibsToJavaLibraryPath();
 

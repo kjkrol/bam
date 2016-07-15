@@ -1,8 +1,6 @@
-package bam;
+package bam.opengl;
 
 import bam.model.BaseBamType;
-import bam.opengl.GLUtil;
-import bam.opengl.JarNativeLibsScanning;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,13 +31,14 @@ public class OpenGlConfiguration {
     @Setter
     private boolean fullscreen = false;
 
-    public OpenGlConfiguration(JarNativeLibsScanning jarNativeLibsScanning) {
-        jarNativeLibsScanning.findAndAddNativeLibsToJavaLibraryPath();
+    public OpenGlConfiguration(JarNativeLibsScan jarNativeLibsScan) {
+        jarNativeLibsScan.findAndAddNativeLibsToJavaLibraryPath();
         setupDisplay();
         setupGL11();
     }
 
-    void refreshView(List<BaseBamType> bamObjects) {
+    //TODO: this is not a part of configuration
+    public void refreshView(List<BaseBamType> bamObjects) {
         /* Clear The Screen And The Depth Buffer */
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glPushMatrix();

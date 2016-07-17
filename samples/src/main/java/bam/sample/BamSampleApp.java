@@ -1,5 +1,6 @@
 package bam.sample;
 
+import bam.sample.config.BamSampleAppConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -7,7 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class BamSampleApp {
 
     public static void main(String[] args) {
-        new AnnotationConfigApplicationContext(BamSampleAppConfiguration.class);
+        new AnnotationConfigApplicationContext(BamSampleAppConfig.class);
     }
 
 }

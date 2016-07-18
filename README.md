@@ -15,7 +15,7 @@ Projects uses **[Lombok](https://projectlombok.org/)** features so developers sh
 
 Building
 --------
-Project building process is configured and managed by Gradle 2.x  
+Project building process is configured and managed by [Gradle 2.x](https://gradle.org/)  
 To build a package from the command use a command: ```gradle build```
 
 Sample

@@ -1,6 +1,5 @@
 package bam;
 
-import bam.common.Function4Args;
 import bam.model.BaseBamType;
 import bam.model.Oval;
 import bam.model.Rect;

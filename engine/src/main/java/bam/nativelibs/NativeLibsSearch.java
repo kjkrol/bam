@@ -1,4 +1,4 @@
-package bam.opengl;
+package bam.nativelibs;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -10,14 +10,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+@FunctionalInterface
 public interface NativeLibsSearch {
 
     String ROOT_LIB_DIR = "libs/native";
 
     default Stream<Path> getNativeLibraries() {
         return new NativeLibsSearch.SystemNameScanner().getSystemName().map(osName -> {
-            final String osArch = new NativeLibsSearch.SystemArchScanner().getSystemArch();
-            final Path targetPath = Paths.get(ROOT_LIB_DIR, osName, osArch);
+            String osArch = new NativeLibsSearch.SystemArchScanner().getSystemArch();
+            Path targetPath = Paths.get(ROOT_LIB_DIR, osName, osArch);
             return scan(targetPath);
         }).orElseGet(Stream::empty);
     }

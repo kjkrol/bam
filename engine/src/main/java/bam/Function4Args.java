@@ -1,4 +1,4 @@
-package bam.common;
+package bam;
 
 /**
  * @author Karol Krol

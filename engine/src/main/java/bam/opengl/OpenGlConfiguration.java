@@ -1,6 +1,9 @@
 package bam.opengl;
 
 import bam.model.BaseBamType;
+import bam.nativelibs.NativeLibsBinder;
+import bam.nativelibs.NativeLibsJarIntrospectSearch;
+import bam.nativelibs.NativeLibsSearch;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -43,7 +46,9 @@ public class OpenGlConfiguration {
     private AtomicBoolean displayEnable = new AtomicBoolean();
 
     public OpenGlConfiguration() {
-        bindRequiredNativeLibraries();
+        final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
+        final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
+        nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
         setupDisplay();
     }
 
@@ -80,28 +85,6 @@ public class OpenGlConfiguration {
             GL11.glFlush();
             Display.sync(FPS_LIMIT);
             Display.update();
-        }
-    }
-
-    private void bindRequiredNativeLibraries() {
-        final JavaTemporaryDirectory javaTemporaryDirectory = new JavaTemporaryDirectory();
-        if (javaTemporaryDirectory.isTempDirectoryExist()) {
-            final String javaTemporaryDir = javaTemporaryDirectory.getJavaTempDirectory().toString();
-            final JavaLibraryPath javaLibraryPath = new JavaLibraryPath(javaTemporaryDir);
-
-
-            ((NativeLibsSearch) (Path targetPath) -> {
-                try {
-                    final URI jarURI = getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-                    final Path jarPath = Paths.get(jarURI);
-                    final FileSystem fileSystem = FileSystems.newFileSystem(jarPath, null);
-                    final Path path = fileSystem.getPath(targetPath.toString());
-                    return Files.walk(path, 1).filter(Path::isAbsolute);
-                } catch (IOException | URISyntaxException e) {
-                    log.error(e.getMessage(), e);
-                }
-                return Stream.empty();
-            }).getNativeLibraries().forEach(javaLibraryPath::addFile);
         }
     }
 

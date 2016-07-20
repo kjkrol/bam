@@ -1,22 +1,30 @@
-# BAM!
+BAM!
+====
+**BAM!** is a Java library to modeling and presenting the dynamics of a rigid body.
+The graphics layer is supported by a **[LWJGL](https://github.com/LWJGL/lwjgl3)** - the library that enables cross-platform access to OpenGL.  
+The physics engine is supported by a **[JBox2d](https://github.com/jbox2d/jbox2d)** library.  
 
-**BAM!** is a Java library that enables to modeling and presenting the dynamics of a rigid body.
-The graphics layer is supported by a **LWJGL** library that enables cross-platform access to OpenGL.
-The physics engine is supported by a **JBox2d** library.  
+Requirements
+------------
+* JDK 8.x installed
+* [Gradle 2.x](https://gradle.org/) installed
 
-## Requirements
-1. JRE 8.x installed
-2. Gradle 2.x installed
+Configuration
+-------------
+Projects uses **[Lombok](https://projectlombok.org/)** features so developers should install proper plugins for IDE.
 
-## Building
-Project building process is configured and managed by Gradle 2.x
+Building
+--------
+Project building process is configured and managed by Gradle 2.x  
+To build a package from the command use command: ```gradle build```
 
-## Sample
-There is an option to build executable jar file with dependencies:  
-```gradle build```  
-To run sample app type:  
-```java -jar samples/build/libs/samples-1.0.0.jar```
+Sample
+------
+To run sample app from a command line use command: ```java -jar samples/build/libs/samples-1.0.0.jar```
 
-## References
-1. LWJGL https://github.com/LWJGL/lwjgl3
-2. JBox2d https://github.com/jbox2d/jbox2d
+References
+----------
+* [LWJGL](https://github.com/LWJGL/lwjgl3)
+* [JBox2d](https://github.com/jbox2d/jbox2d)
+* [Lombok](https://projectlombok.org/)
+* [Gradle 2.x](https://gradle.org/)

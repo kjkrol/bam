@@ -27,7 +27,7 @@ public class BamPlane {
     @Getter
     private final List<BaseBamType> bamObjects = new ArrayList<>();
 
-    @Getter
+//    @Getter
     private final PhysicalBodyFactory physicalBodyFactory;
 
     @Getter

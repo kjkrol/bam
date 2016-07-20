@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+@Slf4j
 public class NativeLibsBinder {
 
     public void bindLibs(Stream<Path> paths) {
@@ -22,7 +23,6 @@ public class NativeLibsBinder {
         }
     }
 
-    @Slf4j
     private final class JavaLibraryPath {
         private static final String JAVA_LIBRARY_PATH = "java.library.path";
         private static final String SYS_PATHS = "sys_paths";

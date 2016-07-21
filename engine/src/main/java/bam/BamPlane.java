@@ -2,6 +2,7 @@ package bam;
 
 import bam.model.BaseBamType;
 import bam.opengl.OpenGlConfiguration;
+import bam.opengl.OpenGlPlane2dDisplay;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -13,51 +14,53 @@ import java.util.List;
 @ToString
 @Slf4j
 public class BamPlane {
-    private static final float TIME_AMOUNT_FACTOR_COEFFICIENT = 1000.f;
-    private static final float TIME_AMOUNT_FACTOR = 1.0f / TIME_AMOUNT_FACTOR_COEFFICIENT;
+    private static final float TIME_AMOUNT_FACTOR = 0.001f;
     private static final int VELOCITY_ITERATIONS = 10;
     private static final int POSITION_ITERATIONS = 10;
 
-    @Getter
     private final World world;
 
-    @Getter
-    private final OpenGlConfiguration openGlConfiguration;
-
-    @Getter
     private final List<BaseBamType> bamObjects = new ArrayList<>();
 
-//    @Getter
-    private final PhysicalBodyFactory physicalBodyFactory;
+    private final StopWatch stopWatch = new StopWatch();
+
+    private final OpenGlConfiguration configuration;
+
+    private final OpenGlPlane2dDisplay openGlPlane2dDisplay;
 
     @Getter
     private final BamObjectsFactory bamObjectsFactory;
 
-    @Getter
-    private final StopWatch stopWatch = new StopWatch();
-
-    public BamPlane(World world, OpenGlConfiguration openGlConfiguration) {
-        this.openGlConfiguration = openGlConfiguration;
+    public BamPlane(World world, OpenGlConfiguration configuration) {
+        this.configuration = configuration;
         this.world = world;
-        this.physicalBodyFactory = new PhysicalBodyFactory(world);
-        this.bamObjectsFactory = new BamObjectsFactory(this.physicalBodyFactory::createBody, this.bamObjects::add);
+        this.openGlPlane2dDisplay = new OpenGlPlane2dDisplay(configuration);
+        this.bamObjectsFactory = new BamObjectsFactory(world::createBody, this.bamObjects::add);
     }
 
     public void start() {
-        this.openGlConfiguration.startDisplay();
-        this.getStopWatch().getDelta();
-        while (openGlConfiguration.isDisplayEnabled()) {
+        openGlPlane2dDisplay.startDisplay();
+        stopWatch.getDelta();
+        while (openGlPlane2dDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            openGlConfiguration.refreshView(getBamObjects());
+            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(BaseBamType::draw));
         }
-        openGlConfiguration.closeDisplay();
+        openGlPlane2dDisplay.closeDisplay();
+    }
+
+    public float getDisplayWidth() {
+        return configuration.getDisplayWidth();
+    }
+
+    public float getDisplayHeight() {
+        return configuration.getDisplayHeight();
     }
 
     private void refreshWorldState() {
-        final int delta = this.getStopWatch().getDelta();
+        final int delta = stopWatch.getDelta();
         final float freq = delta * TIME_AMOUNT_FACTOR;
-        getWorld().step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        world.step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
     }
 
 }

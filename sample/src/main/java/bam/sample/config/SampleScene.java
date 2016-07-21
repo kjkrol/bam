@@ -1,5 +1,6 @@
 package bam.sample.config;
 
+import bam.BamPlane;
 import bam.sample.model.BorderWall;
 import bam.sample.model.RedBall;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,8 @@ public class SampleScene {
         this.redBall = redBall;
     }
 
-    void init() {
-        borderWall.create(BORDER_WALL_WITH);
+    void init(BamPlane bamPlane) {
+        borderWall.create(BORDER_WALL_WITH, bamPlane.getDisplayWidth(), bamPlane.getDisplayHeight());
         redBall.create();
     }
 

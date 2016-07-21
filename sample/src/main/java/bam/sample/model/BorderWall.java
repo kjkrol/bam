@@ -21,21 +21,21 @@ public class BorderWall {
         this.bamPlane = bamPlane;
     }
 
-    public void create(final float breadth) {
+    public void create(final float breadth, final float borderWidth, final float borderHeight) {
         final FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = BORDER_WALL_DENSITY;
         fixtureDef.friction = BORDER_WALL_FRICTION;
         fixtureDef.restitution = BORDER_WALL_RESTITUTION;
         bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(0, bamPlane.getOpenGlConfiguration().getDisplayWith()))
-                .width(bamPlane.getOpenGlConfiguration().getDisplayWith())
+                .position(new Vec2(0, borderWidth))
+                .width(borderWidth)
                 .height(breadth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));
         bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
-                .width(bamPlane.getOpenGlConfiguration().getDisplayWith())
+                .width(borderWidth)
                 .height(breadth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
@@ -43,14 +43,14 @@ public class BorderWall {
         bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(breadth)
-                .height(bamPlane.getOpenGlConfiguration().getDisplayHeight())
+                .height(borderHeight)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));
         bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(bamPlane.getOpenGlConfiguration().getDisplayWith(), 0))
+                .position(new Vec2(borderWidth, 0))
                 .width(breadth)
-                .height(bamPlane.getOpenGlConfiguration().getDisplayHeight())
+                .height(borderHeight)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));

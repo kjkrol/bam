@@ -13,8 +13,7 @@ public class BamSampleAppConfig {
 
     @Autowired
     public BamSampleAppConfig(BamPlane bamPlane, SampleScene sampleScene) {
-        log.info("scene ready");
-        sampleScene.init();
+        sampleScene.init(bamPlane);
         bamPlane.start();
     }
 

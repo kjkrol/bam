@@ -20,34 +20,15 @@ import java.util.function.Function;
 
 public class BamObjectsFactory {
 
-    @Getter
-    private final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody;
+    private final PhysicalBodyFactory physicalBodyFactory;
 
     @Getter
     private final Function<BaseBamType, Boolean> bamObjectListAppender;
 
-    BamObjectsFactory(final Function<PhysicalBodyFactory.BodyBuilder, Body> createBody,
-                             final Function<BaseBamType, Boolean> appendBamObjectsList) {
-        this.createBody = createBody;
+    BamObjectsFactory(final PhysicalBodyFactory physicalBodyFactory,
+                      final Function<BaseBamType, Boolean> appendBamObjectsList) {
+        this.physicalBodyFactory = physicalBodyFactory;
         this.bamObjectListAppender = appendBamObjectsList;
-    }
-
-    private <T extends BaseBamType> T create(final Vec2 position, final float[] params, final BodyType bodyType,
-                                             final FixtureDef fixtureDef, Texture texture, ReadableColor color,
-                                             final Function<float[], Shape> shapeFunction,
-                                             final Function4Args<T, Body, Texture, ReadableColor, float[]> bamObjConstructor) {
-        final Shape shape = shapeFunction.apply(params);
-        final Body body = this.createBody.apply(
-                PhysicalBodyFactory.builder()
-                        .position(position)
-                        .bodyType(bodyType)
-                        .shape(shape)
-                        .templateFixture(fixtureDef)
-        );
-        final T t = bamObjConstructor.apply(body, texture, color, params);
-        body.setUserData(t);
-        this.bamObjectListAppender.apply(t);
-        return t;
     }
 
     public Rect createRect(RectBuilder builder) {
@@ -56,6 +37,23 @@ public class BamObjectsFactory {
 
     public Oval createOval(OvalBuilder builder) {
         return builder.bamObjectsFactory(this).build();
+    }
+
+    private <T extends BaseBamType> T create(final Vec2 position, final float[] params, final BodyType bodyType,
+                                             final FixtureDef fixtureDef, Texture texture, ReadableColor color,
+                                             final Function<float[], Shape> shapeFunction,
+                                             final Function4Args<T, Body, Texture, ReadableColor, float[]> bamObjConstructor) {
+        final Shape shape = shapeFunction.apply(params);
+        final PhysicalBodyParams physicalBodyParams = PhysicalBodyParams.builder()
+                .bodyType(bodyType)
+                .fixture(fixtureDef)
+                .shape(shape)
+                .build();
+        final Body body = physicalBodyFactory.create(position, physicalBodyParams);
+        final T t = bamObjConstructor.apply(body, texture, color, params);
+        body.setUserData(t);
+        this.bamObjectListAppender.apply(t);
+        return t;
     }
 
     @Builder(builderMethodName = "rectBuilder")

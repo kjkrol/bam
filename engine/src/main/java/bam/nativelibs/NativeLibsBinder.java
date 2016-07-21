@@ -36,7 +36,12 @@ public class NativeLibsBinder {
         void addFile(Path libraryPath) {
             final Path tempFile = Paths.get(dir, libraryPath.getFileName().toString());
             try {
-                Files.copy(libraryPath, tempFile).toFile().deleteOnExit();
+                if (Files.notExists(tempFile)) {
+                    Files.copy(libraryPath, tempFile).toFile().deleteOnExit();
+                    log.info("copy file {} into dir {}", libraryPath, dir);
+                } else {
+                    log.info("file {} is already in dir {}", libraryPath, dir);
+                }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);
             }

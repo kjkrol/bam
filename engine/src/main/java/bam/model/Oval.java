@@ -1,12 +1,12 @@
 package bam.model;
 
+import bam.OpenGlModelParams;
 import lombok.Getter;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
-import org.newdawn.slick.opengl.Texture;
 
-public class Oval extends BaseBamType {
+public class Oval extends BaseModel {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
 
@@ -32,8 +32,8 @@ public class Oval extends BaseBamType {
     @Getter
     private final float[] ty;
 
-    public Oval(Body body, Texture texture, ReadableColor color, float radius) {
-        super(body, texture, color);
+    public Oval(Body body, ReadableColor color, float radius) {
+        super(body, color);
         this.radius = radius;
         int initEdges = (int) (radius / FACTOR_FOUR);
         this.edges = initEdges < MINIMUM_EDGES_NUMBER ? MINIMUM_EDGES_NUMBER : initEdges;
@@ -44,22 +44,8 @@ public class Oval extends BaseBamType {
         this.init();
     }
 
-    public Oval(Body body, Texture texture, ReadableColor color, float[] params) {
-        this(body, texture, color, params[0]);
-    }
-
-    @Override
-    protected void drawTexture() {
-
-        GL11.glBegin(GL11.GL_POLYGON);
-
-        for (int index = 0; index < this.edges; ++index) {
-            GL11.glTexCoord2f(tx[index], ty[index]);
-            GL11.glVertex2f(x[index], y[index]);
-        }
-
-        GL11.glEnd();
-
+    public Oval(OpenGlModelParams openGlModelParams) {
+        this(openGlModelParams.getBody(), openGlModelParams.getColor(), openGlModelParams.getParams()[0]);
     }
 
     @Override

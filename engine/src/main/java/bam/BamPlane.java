@@ -1,6 +1,6 @@
 package bam;
 
-import bam.model.BaseBamType;
+import bam.model.BaseModel;
 import bam.opengl.OpenGlConfiguration;
 import bam.opengl.OpenGlPlane2dDisplay;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class BamPlane {
 
     private final World world;
 
-    private final List<BaseBamType> bamObjects = new ArrayList<>();
+    private final List<BaseModel> bamObjects = new ArrayList<>();
 
     private final StopWatch stopWatch = new StopWatch();
 
@@ -44,7 +44,7 @@ public class BamPlane {
         while (openGlPlane2dDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(BaseBamType::draw));
+            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(BaseModel::draw));
         }
         openGlPlane2dDisplay.closeDisplay();
     }

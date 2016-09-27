@@ -1,51 +1,40 @@
 package bam.model;
 
 import bam.OpenGlModelParams;
-import lombok.Getter;
+import bam.model.base.BaseModel;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
+import static java.util.Objects.nonNull;
+
 public class Oval extends BaseModel {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
-
     private static final float HALF = 0.5f;
-
     private static final int FACTOR_FOUR = 4;
 
-    @Getter
     private final float radius;
-
-    @Getter
-    private final int edges;
-
-    @Getter
+    private final int numberOfEdges;
     private final float[] x;
-
-    @Getter
     private final float[] y;
-
-    @Getter
     private final float[] tx;
-
-    @Getter
     private final float[] ty;
-
-    public Oval(Body body, ReadableColor color, float radius) {
-        super(body, color);
-        this.radius = radius;
-        int initEdges = (int) (radius / FACTOR_FOUR);
-        this.edges = initEdges < MINIMUM_EDGES_NUMBER ? MINIMUM_EDGES_NUMBER : initEdges;
-        this.x = new float[edges];
-        this.y = new float[edges];
-        this.tx = new float[edges];
-        this.ty = new float[edges];
-        this.init();
-    }
 
     public Oval(OpenGlModelParams openGlModelParams) {
         this(openGlModelParams.getBody(), openGlModelParams.getColor(), openGlModelParams.getParams()[0]);
+    }
+
+    private Oval(Body body, ReadableColor color, float radius) {
+        super(body, color);
+        this.radius = radius;
+        int initEdges = (int) (radius / FACTOR_FOUR);
+        this.numberOfEdges = initEdges < MINIMUM_EDGES_NUMBER ? MINIMUM_EDGES_NUMBER : initEdges;
+        this.x = new float[numberOfEdges];
+        this.y = new float[numberOfEdges];
+        this.tx = new float[numberOfEdges];
+        this.ty = new float[numberOfEdges];
+        this.init();
     }
 
     @Override
@@ -63,17 +52,17 @@ public class Oval extends BaseModel {
         GL11.glEnd();
 
         GL11.glBegin(GL11.GL_LINE_LOOP);
-        for (int index = 0; index < this.edges; ++index) {
+        for (int index = 0; index < numberOfEdges; ++index) {
             GL11.glVertex2f(x[index], y[index]);
         }
         GL11.glEnd();
 
-        final ReadableColor color = this.getColor();
+        final ReadableColor color = getColor();
         GL11.glBegin(GL11.GL_POLYGON);
-        if (null != color) {
+        if (nonNull(color)) {
             GL11.glColor4f(color.getRed(), color.getGreen(), color.getBlue(), HALF);
         }
-        for (int index = 0; index < this.edges; ++index) {
+        for (int index = 0; index < numberOfEdges; ++index) {
             GL11.glVertex2f(x[index], y[index]);
         }
 
@@ -81,12 +70,13 @@ public class Oval extends BaseModel {
     }
 
     private void init() {
-        for (int index = 0; index < this.edges; ++index) {
-            double radian = 2 * Math.PI * index / this.edges;
+        final double radianFactor = 2 * Math.PI / this.numberOfEdges;
+        for (int index = 0; index < this.numberOfEdges; ++index) {
+            double radian = radianFactor * index;
             float xcos = (float) Math.cos(radian);
             float ysin = (float) Math.sin(radian);
-            x[index] = xcos * this.radius;
-            y[index] = ysin * this.radius;
+            x[index] = xcos * radius;
+            y[index] = ysin * radius;
             tx[index] = xcos * HALF + HALF;
             ty[index] = ysin * HALF + HALF;
         }

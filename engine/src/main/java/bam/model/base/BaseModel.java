@@ -1,6 +1,7 @@
-package bam.model;
+package bam.model.base;
 
 import bam.ControllableBamObject;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -8,6 +9,8 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
+
+import static java.util.Objects.nonNull;
 
 @ToString
 @RequiredArgsConstructor
@@ -26,7 +29,8 @@ public abstract class BaseModel implements ControllableBamObject {
 
     @Getter
     private final Body body;
-    @Getter
+
+    @Getter(AccessLevel.PROTECTED)
     private final ReadableColor color;
 
     protected abstract void drawShape();
@@ -36,7 +40,7 @@ public abstract class BaseModel implements ControllableBamObject {
         GL11.glTranslatef(getXPos(), getYPos(), 0);
         final float angle = body.getAngle() * ANGLE_TO_RAD_COEFFICIENT;
         GL11.glRotatef(angle, 0, 0, 1);
-        ReadableColor color1 = null != this.color ? color : ReadableColor.WHITE;
+        ReadableColor color1 = nonNull(color) ? color : ReadableColor.WHITE;
         GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         this.drawShape();

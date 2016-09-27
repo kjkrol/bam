@@ -1,10 +1,9 @@
 package bam;
 
-import bam.model.BaseModel;
 import bam.model.Oval;
 import bam.model.Rect;
+import bam.model.base.BaseModel;
 import lombok.Builder;
-import lombok.Getter;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
@@ -16,18 +15,18 @@ import org.lwjgl.util.ReadableColor;
 
 import java.util.function.Function;
 
-
+//TODO: wydaje mi sie, ze ta klasa powinna byc przeniesiona to pakietu bam.model.base
 public class BamObjectsFactory {
 
     private final PhysicalBodyFactory physicalBodyFactory;
 
-    @Getter
+    //TODO: to nie lezy w kompetencjach tej klasy!
     private final Function<BaseModel, Boolean> bamObjectListAppender;
 
     BamObjectsFactory(final PhysicalBodyFactory physicalBodyFactory,
-                      final Function<BaseModel, Boolean> appendBamObjectsList) {
+                      final Function<BaseModel, Boolean> bamObjectsListAppender) {
         this.physicalBodyFactory = physicalBodyFactory;
-        this.bamObjectListAppender = appendBamObjectsList;
+        this.bamObjectListAppender = bamObjectsListAppender;
     }
 
     public Rect createRect(RectBuilder builder) {
@@ -38,6 +37,7 @@ public class BamObjectsFactory {
         return builder.bamObjectsFactory(this).build();
     }
 
+    //TODO: to trzeba koniecznie uproscic, bo jest zupelnie nieczytelne
     private <T extends BaseModel> T create(final Vec2 position,
                                            final float[] params,
                                            final BodyType bodyType,
@@ -62,6 +62,8 @@ public class BamObjectsFactory {
         this.bamObjectListAppender.apply(t);
         return t;
     }
+
+    //TODO: te dwa buildery nie maja praw tu byc!
 
     @Builder(builderMethodName = "rectBuilder")
     private static Rect buildRect(Vec2 position, float width, float height, BodyType bodyType,

@@ -1,6 +1,6 @@
 package bam;
 
-import bam.model.BaseModel;
+import bam.model.base.BaseModel;
 import bam.opengl.OpenGlConfiguration;
 import bam.opengl.OpenGlPlane2dDisplay;
 import lombok.Getter;
@@ -35,7 +35,8 @@ public class BamPlane {
         this.configuration = configuration;
         this.world = world;
         this.openGlPlane2dDisplay = new OpenGlPlane2dDisplay(configuration);
-        this.bamObjectsFactory = new BamObjectsFactory(world::createBody, this.bamObjects::add);
+        final PhysicalBodyFactory physicalBodyFactory = new PhysicalBodyFactory(world::createBody);
+        this.bamObjectsFactory = new BamObjectsFactory(physicalBodyFactory, this.bamObjects::add);
     }
 
     public void start() {

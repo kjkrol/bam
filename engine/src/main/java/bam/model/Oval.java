@@ -1,14 +1,14 @@
 package bam.model;
 
-import bam.OpenGlModelParams;
-import bam.model.base.BaseModel;
+import bam.model.base.OpenGlModelParams;
+import bam.model.base.AbstractShape;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Oval extends BaseModel {
+public class Oval extends AbstractShape {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
     private static final float HALF = 0.5f;

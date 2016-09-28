@@ -14,7 +14,7 @@ import static java.util.Objects.nonNull;
 
 @ToString
 @RequiredArgsConstructor
-public abstract class BaseModel implements ControllableBamObject {
+public abstract class AbstractShape implements ControllableBamObject {
     private static final float DEFAULT_DENSITY_COEFFICIENT = 1.0f;
     private static final float DEFAULT_FRICTION_COEFFICIENT = 0.7f;
     private static final float DEFAULT_RESTITUTION_COEFFICIENT = 0.5f;

@@ -1,8 +1,7 @@
-package bam;
+package bam.model.base;
 
 import bam.model.Oval;
 import bam.model.Rect;
-import bam.model.base.BaseModel;
 import lombok.Builder;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -15,16 +14,15 @@ import org.lwjgl.util.ReadableColor;
 
 import java.util.function.Function;
 
-//TODO: wydaje mi sie, ze ta klasa powinna byc przeniesiona to pakietu bam.model.base
 public class BamObjectsFactory {
 
     private final PhysicalBodyFactory physicalBodyFactory;
 
     //TODO: to nie lezy w kompetencjach tej klasy!
-    private final Function<BaseModel, Boolean> bamObjectListAppender;
+    private final Function<AbstractShape, Boolean> bamObjectListAppender;
 
     BamObjectsFactory(final PhysicalBodyFactory physicalBodyFactory,
-                      final Function<BaseModel, Boolean> bamObjectsListAppender) {
+                      final Function<AbstractShape, Boolean> bamObjectsListAppender) {
         this.physicalBodyFactory = physicalBodyFactory;
         this.bamObjectListAppender = bamObjectsListAppender;
     }
@@ -38,13 +36,14 @@ public class BamObjectsFactory {
     }
 
     //TODO: to trzeba koniecznie uproscic, bo jest zupelnie nieczytelne
-    private <T extends BaseModel> T create(final Vec2 position,
-                                           final float[] params,
-                                           final BodyType bodyType,
-                                           final FixtureDef fixtureDef,
-                                           final ReadableColor color,
-                                           final Function<float[], Shape> shapeFunction,
-                                           final Function<OpenGlModelParams, T> bamObjConstructor) {
+    private <T extends AbstractShape> T create(final Vec2 position,
+                                               final float[] params,
+                                               final BodyType bodyType,
+                                               final FixtureDef fixtureDef,
+                                               final ReadableColor color,
+                                               final Function<float[], Shape> shapeFunction,
+                                               final Function<OpenGlModelParams, T> bamObjConstructor) {
+
         final Shape shape = shapeFunction.apply(params);
         final PhysicalBodyParams physicalBodyParams = PhysicalBodyParams.builder()
                 .bodyType(bodyType)

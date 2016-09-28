@@ -1,4 +1,4 @@
-package bam;
+package bam.model.base;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package bam.sample.model;
 
-import bam.BamObjectsFactory;
-import bam.BamPlane;
+import bam.model.base.BamObjectsFactory;
+import bam.BamScene;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
@@ -14,11 +14,11 @@ public class BorderWall {
     private static final float BORDER_WALL_DENSITY = 10f;
     private static final float BORDER_WALL_FRICTION = 0.5f;
     private static final float BORDER_WALL_RESTITUTION = 0.1f;
-    private BamPlane bamPlane;
+    private BamScene bamScene;
 
     @Autowired
-    public BorderWall(BamPlane bamPlane) {
-        this.bamPlane = bamPlane;
+    public BorderWall(BamScene bamScene) {
+        this.bamScene = bamScene;
     }
 
     public void create(final float breadth, final float borderWidth, final float borderHeight) {
@@ -26,28 +26,28 @@ public class BorderWall {
         fixtureDef.density = BORDER_WALL_DENSITY;
         fixtureDef.friction = BORDER_WALL_FRICTION;
         fixtureDef.restitution = BORDER_WALL_RESTITUTION;
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
+        bamScene.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, borderWidth))
                 .width(borderWidth)
                 .height(breadth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
+        bamScene.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(borderWidth)
                 .height(breadth)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
+        bamScene.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(0, 0))
                 .width(breadth)
                 .height(borderHeight)
                 .bodyType(BodyType.STATIC)
                 .fixtureDef(fixtureDef)
                 .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
+        bamScene.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
                 .position(new Vec2(borderWidth, 0))
                 .width(breadth)
                 .height(borderHeight)

@@ -1,14 +1,14 @@
 package bam.model;
 
-import bam.OpenGlModelParams;
-import bam.model.base.BaseModel;
+import bam.model.base.OpenGlModelParams;
+import bam.model.base.AbstractShape;
 import org.jbox2d.dynamics.Body;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Rect extends BaseModel {
+public class Rect extends AbstractShape {
     private static final float HALF = 0.5f;
     private final float width;
     private final float height;

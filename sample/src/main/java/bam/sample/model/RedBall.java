@@ -1,7 +1,7 @@
 package bam.sample.model;
 
-import bam.BamObjectsFactory;
-import bam.BamPlane;
+import bam.model.base.BamObjectsFactory;
+import bam.BamScene;
 import bam.model.Oval;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
@@ -14,15 +14,15 @@ public class RedBall {
     private static final float BALL_INIT_X_POS = 200f;
     private static final float BALL_INIT_Y_POS = 400f;
     private static final float BALL_INIT_RADIUS = 12;
-    private BamPlane bamPlane;
+    private BamScene bamScene;
 
     @Autowired
-    public RedBall(BamPlane bamPlane) {
-        this.bamPlane = bamPlane;
+    public RedBall(BamScene bamScene) {
+        this.bamScene = bamScene;
     }
 
     public void create() {
-        bamPlane.getBamObjectsFactory().createOval(BamObjectsFactory.ovalBuilder()
+        bamScene.getBamObjectsFactory().createOval(BamObjectsFactory.ovalBuilder()
                 .bodyType(BodyType.DYNAMIC)
                 .color(ReadableColor.RED)
                 .position(new Vec2(BALL_INIT_X_POS, BALL_INIT_Y_POS))

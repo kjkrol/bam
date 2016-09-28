@@ -1,6 +1,8 @@
 package bam;
 
-import bam.model.base.BaseModel;
+import bam.model.base.AbstractShape;
+import bam.model.base.BamObjectsFactory;
+import bam.model.base.PhysicalBodyFactory;
 import bam.opengl.OpenGlConfiguration;
 import bam.opengl.OpenGlPlane2dDisplay;
 import lombok.Getter;
@@ -13,14 +15,14 @@ import java.util.List;
 
 @ToString
 @Slf4j
-public class BamPlane {
+public class BamScene {
     private static final float TIME_AMOUNT_FACTOR = 0.001f;
     private static final int VELOCITY_ITERATIONS = 10;
     private static final int POSITION_ITERATIONS = 10;
 
     private final World world;
 
-    private final List<BaseModel> bamObjects = new ArrayList<>();
+    private final List<AbstractShape> bamObjects = new ArrayList<>();
 
     private final StopWatch stopWatch = new StopWatch();
 
@@ -31,7 +33,7 @@ public class BamPlane {
     @Getter
     private final BamObjectsFactory bamObjectsFactory;
 
-    public BamPlane(World world, OpenGlConfiguration configuration) {
+    public BamScene(World world, OpenGlConfiguration configuration) {
         this.configuration = configuration;
         this.world = world;
         this.openGlPlane2dDisplay = new OpenGlPlane2dDisplay(configuration);
@@ -45,7 +47,7 @@ public class BamPlane {
         while (openGlPlane2dDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(BaseModel::draw));
+            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(AbstractShape::draw));
         }
         openGlPlane2dDisplay.closeDisplay();
     }

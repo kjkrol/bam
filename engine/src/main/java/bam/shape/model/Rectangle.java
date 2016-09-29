@@ -1,29 +1,25 @@
-package bam.model;
+package bam.shape.model;
 
-import bam.model.base.OpenGlModelParams;
-import bam.model.base.AbstractShape;
+import bam.shape.model.base.AbstractShape;
+import org.jbox2d.collision.shapes.PolygonShape;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Rect extends AbstractShape {
+public class Rectangle extends AbstractShape {
     private static final float HALF = 0.5f;
     private final float width;
     private final float height;
 
-    public Rect(OpenGlModelParams openGlModelParams) {
-        this(openGlModelParams.getBody(),
-                openGlModelParams.getColor(),
-                openGlModelParams.getParams()[0],
-                openGlModelParams.getParams()[1]);
-    }
-
-    private Rect(Body body, ReadableColor color, float width, float height) {
-        super(body, color);
+    public Rectangle(Body body, FixtureDef fixtureDef, ReadableColor color, float width, float height) {
+        super(body, fixtureDef, color);
         this.width = width;
         this.height = height;
+        init();
     }
 
     @Override
@@ -44,5 +40,12 @@ public class Rect extends AbstractShape {
         GL11.glVertex2f(+width, +height);
         GL11.glVertex2f(-width, +height);
         GL11.glEnd();
+    }
+
+    @Override
+    protected Shape createShape() {
+        final PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(width, height);
+        return boxShape;
     }
 }

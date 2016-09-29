@@ -1,10 +1,8 @@
 package bam;
 
-import bam.model.base.AbstractShape;
-import bam.model.base.BamObjectsFactory;
-import bam.model.base.PhysicalBodyFactory;
 import bam.opengl.OpenGlConfiguration;
 import bam.opengl.OpenGlPlane2dDisplay;
+import bam.shape.model.base.AbstractShape;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -21,24 +19,19 @@ public class BamScene {
     private static final int POSITION_ITERATIONS = 10;
 
     private final World world;
-
-    private final List<AbstractShape> bamObjects = new ArrayList<>();
-
+    private final List<AbstractShape> shapes = new ArrayList<>();
     private final StopWatch stopWatch = new StopWatch();
-
     private final OpenGlConfiguration configuration;
-
     private final OpenGlPlane2dDisplay openGlPlane2dDisplay;
 
     @Getter
-    private final BamObjectsFactory bamObjectsFactory;
+    private final BamSceneCreator bamSceneCreator;
 
     public BamScene(World world, OpenGlConfiguration configuration) {
         this.configuration = configuration;
         this.world = world;
         this.openGlPlane2dDisplay = new OpenGlPlane2dDisplay(configuration);
-        final PhysicalBodyFactory physicalBodyFactory = new PhysicalBodyFactory(world::createBody);
-        this.bamObjectsFactory = new BamObjectsFactory(physicalBodyFactory, this.bamObjects::add);
+        this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
     public void start() {
@@ -47,7 +40,7 @@ public class BamScene {
         while (openGlPlane2dDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            openGlPlane2dDisplay.redraw(() -> bamObjects.forEach(AbstractShape::draw));
+            openGlPlane2dDisplay.redraw(() -> shapes.forEach(AbstractShape::draw));
         }
         openGlPlane2dDisplay.closeDisplay();
     }

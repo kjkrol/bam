@@ -1,4 +1,4 @@
-package bam.nativelibs;
+package bam.opengl.nativelibs;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

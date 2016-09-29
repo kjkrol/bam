@@ -1,14 +1,16 @@
-package bam.model;
+package bam.shape.model;
 
-import bam.model.base.OpenGlModelParams;
-import bam.model.base.AbstractShape;
+import bam.shape.model.base.AbstractShape;
+import org.jbox2d.collision.shapes.CircleShape;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Oval extends AbstractShape {
+public class Circle extends AbstractShape {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
     private static final float HALF = 0.5f;
@@ -21,12 +23,8 @@ public class Oval extends AbstractShape {
     private final float[] tx;
     private final float[] ty;
 
-    public Oval(OpenGlModelParams openGlModelParams) {
-        this(openGlModelParams.getBody(), openGlModelParams.getColor(), openGlModelParams.getParams()[0]);
-    }
-
-    private Oval(Body body, ReadableColor color, float radius) {
-        super(body, color);
+    public Circle(Body body, FixtureDef fixtureDef, ReadableColor color, float radius) {
+        super(body, fixtureDef, color);
         this.radius = radius;
         int initEdges = (int) (radius / FACTOR_FOUR);
         this.numberOfEdges = initEdges < MINIMUM_EDGES_NUMBER ? MINIMUM_EDGES_NUMBER : initEdges;
@@ -69,7 +67,16 @@ public class Oval extends AbstractShape {
         GL11.glEnd();
     }
 
-    private void init() {
+    @Override
+    protected Shape createShape() {
+        final Shape circleShape = new CircleShape();
+        circleShape.setRadius(radius);
+        return circleShape;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
         final double radianFactor = 2 * Math.PI / this.numberOfEdges;
         for (int index = 0; index < this.numberOfEdges; ++index) {
             double radian = radianFactor * index;

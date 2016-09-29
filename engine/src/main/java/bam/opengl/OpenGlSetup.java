@@ -1,8 +1,8 @@
 package bam.opengl;
 
-import bam.nativelibs.NativeLibsBinder;
-import bam.nativelibs.NativeLibsJarIntrospectSearch;
-import bam.nativelibs.NativeLibsSearch;
+import bam.opengl.nativelibs.NativeLibsBinder;
+import bam.opengl.nativelibs.NativeLibsJarIntrospectSearch;
+import bam.opengl.nativelibs.NativeLibsSearch;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -24,10 +24,10 @@ class OpenGlSetup {
         final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
         nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
         setupDisplay();
-        log.info("OpenGlSetup constructed");
     }
 
     void setupGL11() {
+        log.info("setup OpenGl : starting");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -41,16 +41,19 @@ class OpenGlSetup {
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GL11.glClearDepth(1);
         GL11.glLoadIdentity();
+        log.info("setup OpenGl : done");
     }
 
     private void setupDisplay() {
         try {
+            log.info("setup Display : starting");
             final DisplayMode mode = GLUtil.getDisplayMode(configuration.getDisplayWidth(), configuration.getDisplayHeight());
             Display.setDisplayMode(mode);
             Display.setFullscreen(configuration.isFullscreen());
             Display.setTitle(configuration.getTitle());
-            log.info("Setup Display: DONE");
+            log.info("setup Display : done");
         } catch (LWJGLException e) {
+            log.error("setup Display : error");
             log.error(e.getMessage(), e);
             System.exit(0);
         }

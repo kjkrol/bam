@@ -1,6 +1,6 @@
 package bam;
 
-import bam.model.base.AbstractShape;
+import bam.shape.model.base.AbstractShape;
 import org.jbox2d.common.Vec2;
 
 public interface ControllableBamObject {

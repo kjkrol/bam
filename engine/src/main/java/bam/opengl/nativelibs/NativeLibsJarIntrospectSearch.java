@@ -1,4 +1,4 @@
-package bam.nativelibs;
+package bam.opengl.nativelibs;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,10 +1,8 @@
-package bam.model.base;
+package bam.shape.model.base;
 
 import bam.ControllableBamObject;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.opengl.GL11;
@@ -12,28 +10,40 @@ import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-@ToString
-@RequiredArgsConstructor
 public abstract class AbstractShape implements ControllableBamObject {
     private static final float DEFAULT_DENSITY_COEFFICIENT = 1.0f;
     private static final float DEFAULT_FRICTION_COEFFICIENT = 0.7f;
     private static final float DEFAULT_RESTITUTION_COEFFICIENT = 0.5f;
     public static final FixtureDef DEFAULT_FIXTURE_DEF = new FixtureDef();
+
     static {
         DEFAULT_FIXTURE_DEF.density = DEFAULT_DENSITY_COEFFICIENT;
         DEFAULT_FIXTURE_DEF.friction = DEFAULT_FRICTION_COEFFICIENT;
         DEFAULT_FIXTURE_DEF.restitution = DEFAULT_RESTITUTION_COEFFICIENT;
     }
+
     private static final float PI_RAD = 180f;
     private static final float ANGLE_TO_RAD_COEFFICIENT = (float) (PI_RAD / Math.PI);
 
     @Getter
     private final Body body;
 
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final ReadableColor color;
 
-    protected abstract void drawShape();
+    private final FixtureDef fixture;
+
+    protected AbstractShape(Body body, FixtureDef fixture, ReadableColor color) {
+        this.color = color;
+        this.body = body;
+        this.fixture = fixture;
+    }
+
+    protected void init() {
+        final Shape shape = createShape();
+        final FixtureDef fixtureDef = createFixtureDef(shape, fixture);
+        body.createFixture(fixtureDef);
+    }
 
     public void draw() {
         GL11.glLoadIdentity();
@@ -46,11 +56,24 @@ public abstract class AbstractShape implements ControllableBamObject {
         this.drawShape();
     }
 
-    public float getXPos() {
+    protected abstract void drawShape();
+
+    protected abstract Shape createShape();
+
+    private float getXPos() {
         return body.getPosition().x;
     }
 
-    public float getYPos() {
+    private float getYPos() {
         return body.getPosition().y;
+    }
+
+    private FixtureDef createFixtureDef(Shape shape, FixtureDef fixture) {
+        final FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = fixture.density;
+        fixtureDef.friction = fixture.friction;
+        fixtureDef.restitution = fixture.restitution;
+        return fixtureDef;
     }
 }

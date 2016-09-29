@@ -1,13 +1,13 @@
 package bam;
 
-import bam.model.BaseBamType;
+import bam.shape.model.base.AbstractShape;
 import org.jbox2d.common.Vec2;
 
 public interface ControllableBamObject {
 
-    default void move(final BaseBamType baseBamType, final Vec2 delVelocity, final float freq) {
-        float x = baseBamType.getBody().getMass() * delVelocity.x * freq;
-        float y = baseBamType.getBody().getMass() * delVelocity.y * freq;
-        baseBamType.getBody().applyForceToCenter(new Vec2(x, y));
+    default void move(final AbstractShape abstractShape, final Vec2 delVelocity, final float freq) {
+        float x = abstractShape.getBody().getMass() * delVelocity.x * freq;
+        float y = abstractShape.getBody().getMass() * delVelocity.y * freq;
+        abstractShape.getBody().applyForceToCenter(new Vec2(x, y));
     }
 }

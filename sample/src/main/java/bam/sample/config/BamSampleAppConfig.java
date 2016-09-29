@@ -1,6 +1,6 @@
 package bam.sample.config;
 
-import bam.BamPlane;
+import bam.BamScene;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,10 +12,9 @@ import org.springframework.context.annotation.Configuration;
 public class BamSampleAppConfig {
 
     @Autowired
-    public BamSampleAppConfig(BamPlane bamPlane, SampleScene sampleScene) {
-        log.info("scene ready");
-        sampleScene.init();
-        bamPlane.start();
+    public BamSampleAppConfig(BamScene bamScene, SampleScene sampleScene) {
+        sampleScene.init(bamScene);
+        bamScene.start();
     }
 
 }

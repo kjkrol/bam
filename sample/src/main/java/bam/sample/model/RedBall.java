@@ -1,8 +1,8 @@
 package bam.sample.model;
 
-import bam.BamObjectsFactory;
-import bam.BamPlane;
-import bam.model.Oval;
+import bam.BamScene;
+import bam.shape.model.Circle;
+import bam.shape.request.CreateNewCircleRequest;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.lwjgl.util.ReadableColor;
@@ -14,19 +14,17 @@ public class RedBall {
     private static final float BALL_INIT_X_POS = 200f;
     private static final float BALL_INIT_Y_POS = 400f;
     private static final float BALL_INIT_RADIUS = 12;
-    private BamPlane bamPlane;
+    private BamScene bamScene;
 
     @Autowired
-    public RedBall(BamPlane bamPlane) {
-        this.bamPlane = bamPlane;
+    public RedBall(BamScene bamScene) {
+        this.bamScene = bamScene;
     }
 
     public void create() {
-        bamPlane.getBamObjectsFactory().createOval(BamObjectsFactory.ovalBuilder()
-                .bodyType(BodyType.DYNAMIC)
-                .color(ReadableColor.RED)
-                .position(new Vec2(BALL_INIT_X_POS, BALL_INIT_Y_POS))
-                .radius(BALL_INIT_RADIUS)
-                .fixtureDef(Oval.DEFAULT_FIXTURE_DEF));
+        bamScene.getBamSceneCreator().addShape(
+                new CreateNewCircleRequest(Circle.DEFAULT_FIXTURE_DEF, ReadableColor.RED, BALL_INIT_RADIUS),
+                new Vec2(BALL_INIT_X_POS, BALL_INIT_Y_POS),
+                BodyType.DYNAMIC);
     }
 }

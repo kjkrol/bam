@@ -1,7 +1,7 @@
 package bam.sample.model;
 
-import bam.BamObjectsFactory;
-import bam.BamPlane;
+import bam.BamScene;
+import bam.shape.request.CreateNewRectangleRequest;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
@@ -14,45 +14,34 @@ public class BorderWall {
     private static final float BORDER_WALL_DENSITY = 10f;
     private static final float BORDER_WALL_FRICTION = 0.5f;
     private static final float BORDER_WALL_RESTITUTION = 0.1f;
-    private BamPlane bamPlane;
+    private BamScene bamScene;
 
     @Autowired
-    public BorderWall(BamPlane bamPlane) {
-        this.bamPlane = bamPlane;
+    public BorderWall(BamScene bamScene) {
+        this.bamScene = bamScene;
     }
 
-    public void create(final float breadth) {
+    public void create(final float breadth, final float borderWidth, final float borderHeight) {
         final FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = BORDER_WALL_DENSITY;
         fixtureDef.friction = BORDER_WALL_FRICTION;
         fixtureDef.restitution = BORDER_WALL_RESTITUTION;
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(0, bamPlane.getOpenGlConfiguration().getDisplayWith()))
-                .width(bamPlane.getOpenGlConfiguration().getDisplayWith())
-                .height(breadth)
-                .bodyType(BodyType.STATIC)
-                .fixtureDef(fixtureDef)
-                .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(0, 0))
-                .width(bamPlane.getOpenGlConfiguration().getDisplayWith())
-                .height(breadth)
-                .bodyType(BodyType.STATIC)
-                .fixtureDef(fixtureDef)
-                .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(0, 0))
-                .width(breadth)
-                .height(bamPlane.getOpenGlConfiguration().getDisplayHeight())
-                .bodyType(BodyType.STATIC)
-                .fixtureDef(fixtureDef)
-                .color(ReadableColor.YELLOW));
-        bamPlane.getBamObjectsFactory().createRect(BamObjectsFactory.rectBuilder()
-                .position(new Vec2(bamPlane.getOpenGlConfiguration().getDisplayWith(), 0))
-                .width(breadth)
-                .height(bamPlane.getOpenGlConfiguration().getDisplayHeight())
-                .bodyType(BodyType.STATIC)
-                .fixtureDef(fixtureDef)
-                .color(ReadableColor.YELLOW));
+
+        bamScene.getBamSceneCreator().addShape(
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, borderWidth, breadth),
+                new Vec2(0, borderWidth),
+                BodyType.STATIC);
+        bamScene.getBamSceneCreator().addShape(
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, borderWidth, breadth),
+                new Vec2(0, 0),
+                BodyType.STATIC);
+        bamScene.getBamSceneCreator().addShape(
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderWidth),
+                new Vec2(0, 0),
+                BodyType.STATIC);
+        bamScene.getBamSceneCreator().addShape(
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderWidth),
+                new Vec2(borderWidth, 0),
+                BodyType.STATIC);
     }
 }

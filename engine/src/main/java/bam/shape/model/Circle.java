@@ -1,6 +1,6 @@
 package bam.shape.model;
 
-import bam.shape.model.base.AbstractShape;
+import bam.shape.model.base.BaseShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
@@ -10,7 +10,7 @@ import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Circle extends AbstractShape {
+public class Circle extends BaseShape {
 
     private static final int MINIMUM_EDGES_NUMBER = 12;
     private static final float HALF = 0.5f;

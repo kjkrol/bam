@@ -1,8 +1,8 @@
-package bam.opengl;
+package bam.display.opengl;
 
-import bam.opengl.nativelibs.NativeLibsBinder;
-import bam.opengl.nativelibs.NativeLibsJarIntrospectSearch;
-import bam.opengl.nativelibs.NativeLibsSearch;
+import nativelibs.NativeLibsBinder;
+import nativelibs.NativeLibsJarIntrospectSearch;
+import nativelibs.NativeLibsSearch;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +16,25 @@ import org.lwjgl.opengl.GL11;
 class OpenGlSetup {
 
     @Getter
-    private final OpenGlConfiguration configuration;
+    private final DisplayConfiguration configuration;
 
-    OpenGlSetup(OpenGlConfiguration configuration) {
+    OpenGlSetup(DisplayConfiguration configuration) {
         this.configuration = configuration;
+    }
+
+    void setup() {
+        bindNativeLibs();
+        setupDisplay();
+        setupGL11();
+    }
+
+    private void bindNativeLibs() {
         final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
         final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
         nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
-        setupDisplay();
     }
 
-    void setupGL11() {
+    private void setupGL11() {
         log.info("setup OpenGl : starting");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -46,17 +54,36 @@ class OpenGlSetup {
 
     private void setupDisplay() {
         try {
-            log.info("setup Display : starting");
-            final DisplayMode mode = GLUtil.getDisplayMode(configuration.getDisplayWidth(), configuration.getDisplayHeight());
+            log.info("setup Displayable : starting");
+            final DisplayMode mode = detectDisplayMode();
             Display.setDisplayMode(mode);
             Display.setFullscreen(configuration.isFullscreen());
             Display.setTitle(configuration.getTitle());
-            log.info("setup Display : done");
+            log.info("setup Displayable : done");
         } catch (LWJGLException e) {
-            log.error("setup Display : error");
+            log.error("setup Displayable : error");
             log.error(e.getMessage(), e);
             System.exit(0);
         }
+    }
+
+    // TODO: it's so badly (ugly) written... pls fix this
+    private DisplayMode detectDisplayMode() throws LWJGLException {
+        /* find out what the current bits per pixel of the desktop is */
+        final int bpp = Display.getDisplayMode().getBitsPerPixel();
+        final DisplayMode[] modes = Display.getAvailableDisplayModes();
+        DisplayMode mode = null;
+
+        for (DisplayMode mode1 : modes) {
+            if ((mode1.getBitsPerPixel() == bpp) || (mode == null)) {
+                int width = configuration.getDisplayWidth();
+                int height = configuration.getDisplayHeight();
+                if ((mode1.getWidth() == width) && (mode1.getHeight() == height)) {
+                    mode = mode1;
+                }
+            }
+        }
+        return mode;
     }
 
 }

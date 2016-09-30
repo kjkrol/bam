@@ -1,6 +1,7 @@
 package bam.display.opengl;
 
-import bam.display.base.Displayable;
+import bam.display.DisplayConfiguration;
+import bam.display.Displayable;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;

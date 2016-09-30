@@ -1,5 +1,6 @@
 package bam.display.opengl;
 
+import bam.display.DisplayConfiguration;
 import nativelibs.NativeLibsBinder;
 import nativelibs.NativeLibsJarIntrospectSearch;
 import nativelibs.NativeLibsSearch;

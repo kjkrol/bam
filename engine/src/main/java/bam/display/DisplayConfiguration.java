@@ -1,4 +1,4 @@
-package bam.display.opengl;
+package bam.display;
 
 import lombok.Builder;
 import lombok.Getter;

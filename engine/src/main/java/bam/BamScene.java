@@ -1,7 +1,8 @@
 package bam;
 
-import bam.display.opengl.DisplayConfiguration;
-import bam.display.BamDisplay;
+import bam.display.Displayable;
+import bam.display.DisplayConfiguration;
+import bam.display.opengl.OpenGlDisplay;
 import bam.shape.model.base.BaseShape;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,14 +22,14 @@ public class BamScene {
     private final World world;
     private final List<BaseShape> shapes = new ArrayList<>();
     private final StopWatch stopWatch = new StopWatch();
-    private final BamDisplay bamDisplay;
+    private final Displayable bamDisplay;
 
     @Getter
     private final BamSceneCreator bamSceneCreator;
 
     public BamScene(World world, DisplayConfiguration configuration) {
         this.world = world;
-        this.bamDisplay = new BamDisplay(configuration);
+        this.bamDisplay = new OpenGlDisplay(configuration);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 

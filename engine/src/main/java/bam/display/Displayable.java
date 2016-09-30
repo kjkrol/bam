@@ -1,4 +1,4 @@
-package bam.display.base;
+package bam.display;
 
 public interface Displayable {
 

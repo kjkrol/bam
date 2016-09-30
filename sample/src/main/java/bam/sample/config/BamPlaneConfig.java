@@ -1,7 +1,7 @@
 package bam.sample.config;
 
 import bam.BamScene;
-import bam.display.opengl.DisplayConfiguration;
+import bam.display.DisplayConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.jbox2d.dynamics.World;
 import org.springframework.context.annotation.Bean;

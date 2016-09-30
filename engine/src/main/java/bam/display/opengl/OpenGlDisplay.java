@@ -3,6 +3,9 @@ package bam.display.opengl;
 import bam.display.DisplayConfiguration;
 import bam.display.Displayable;
 import lombok.extern.slf4j.Slf4j;
+import nativelibs.NativeLibsBinder;
+import nativelibs.NativeLibsJarIntrospectSearch;
+import nativelibs.NativeLibsSearch;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
@@ -24,17 +27,18 @@ public class OpenGlDisplay implements Displayable {
 
     public OpenGlDisplay(DisplayConfiguration configuration) {
         fpsLimit = configuration.getFpsLimit();
-        this.width = configuration.getDisplayWidth();
-        this.height = configuration.getDisplayHeight();
+        width = configuration.getDisplayWidth();
+        height = configuration.getDisplayHeight();
         openGlSetup = new OpenGlSetup(configuration);
     }
 
     @Override
-    public void startDisplay() {
+    public void start() {
         if (displayEnable.compareAndSet(false, true)) {
             try {
-                openGlSetup.setup();
+                bindNativeLibs();
                 Display.create();
+                openGlSetup.setup();
             } catch (LWJGLException e) {
                 log.info(e.getMessage(), e);
             }
@@ -42,7 +46,7 @@ public class OpenGlDisplay implements Displayable {
     }
 
     @Override
-    public void closeDisplay() {
+    public void stop() {
         if (displayEnable.get()) {
             Display.destroy();
         }
@@ -50,13 +54,11 @@ public class OpenGlDisplay implements Displayable {
 
     @Override
     public void redraw(Runnable redrawing) {
-        /* Clear The Screen And The Depth Buffer */
         if (displayEnable.get()) {
+            // Clear The Screen And The Depth Buffer
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glPushMatrix();
-
             redrawing.run();
-
             GL11.glLoadIdentity();
             GL11.glPopMatrix();
             GL11.glFlush();
@@ -78,5 +80,11 @@ public class OpenGlDisplay implements Displayable {
     @Override
     public float getDisplayHeight() {
         return height;
+    }
+
+    private void bindNativeLibs() {
+        final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
+        final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
+        nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
     }
 }

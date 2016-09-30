@@ -33,15 +33,16 @@ public class BamScene {
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
+    // TODO: rozdzielić na dwa wątki: jeden zajmuje się odświeżaniem obrazu, drugi fizyką?
     public void start() {
-        bamDisplay.startDisplay();
+        bamDisplay.start();
         stopWatch.getDelta();
         while (bamDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
             bamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
         }
-        bamDisplay.closeDisplay();
+        bamDisplay.stop();
     }
 
     private void refreshWorldState() {

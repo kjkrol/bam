@@ -2,9 +2,9 @@ package bam.display;
 
 public interface Displayable {
 
-    void startDisplay();
+    void start();
 
-    void closeDisplay();
+    void stop();
 
     void redraw(Runnable redrawing);
 

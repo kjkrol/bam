@@ -1,9 +1,6 @@
 package bam.display.opengl;
 
 import bam.display.DisplayConfiguration;
-import nativelibs.NativeLibsBinder;
-import nativelibs.NativeLibsJarIntrospectSearch;
-import nativelibs.NativeLibsSearch;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +8,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Arrays;
 
 @ToString
 @Slf4j
@@ -24,15 +23,8 @@ class OpenGlSetup {
     }
 
     void setup() {
-        bindNativeLibs();
         setupDisplay();
         setupGL11();
-    }
-
-    private void bindNativeLibs() {
-        final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
-        final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
-        nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
     }
 
     private void setupGL11() {
@@ -56,8 +48,9 @@ class OpenGlSetup {
     private void setupDisplay() {
         try {
             log.info("setup Displayable : starting");
-            final DisplayMode mode = detectDisplayMode();
-            Display.setDisplayMode(mode);
+            final DisplayMode displayMode = detectDisplayMode();
+            log.info("set display mode: {}", displayMode);
+            Display.setDisplayMode(displayMode);
             Display.setFullscreen(configuration.isFullscreen());
             Display.setTitle(configuration.getTitle());
             log.info("setup Displayable : done");
@@ -68,23 +61,17 @@ class OpenGlSetup {
         }
     }
 
-    // TODO: it's so badly (ugly) written... pls fix this
     private DisplayMode detectDisplayMode() throws LWJGLException {
-        /* find out what the current bits per pixel of the desktop is */
         final int bpp = Display.getDisplayMode().getBitsPerPixel();
+        final int width = configuration.getDisplayWidth();
+        final int height = configuration.getDisplayHeight();
         final DisplayMode[] modes = Display.getAvailableDisplayModes();
-        DisplayMode mode = null;
-
-        for (DisplayMode mode1 : modes) {
-            if ((mode1.getBitsPerPixel() == bpp) || (mode == null)) {
-                int width = configuration.getDisplayWidth();
-                int height = configuration.getDisplayHeight();
-                if ((mode1.getWidth() == width) && (mode1.getHeight() == height)) {
-                    mode = mode1;
-                }
-            }
-        }
-        return mode;
+        return Arrays.stream(modes)
+                .filter(mode -> mode.getBitsPerPixel() == bpp)
+                .filter(mode -> mode.getWidth() == width)
+                .filter(mode -> mode.getHeight() == height)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("DisplayMode no available"));
     }
 
 }

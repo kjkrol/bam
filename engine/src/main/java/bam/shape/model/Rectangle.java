@@ -1,6 +1,6 @@
 package bam.shape.model;
 
-import bam.shape.model.base.AbstractShape;
+import bam.shape.model.base.BaseShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
@@ -10,7 +10,7 @@ import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Rectangle extends AbstractShape {
+public class Rectangle extends BaseShape {
     private static final float HALF = 0.5f;
     private final float width;
     private final float height;

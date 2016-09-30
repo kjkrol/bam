@@ -10,7 +10,7 @@ import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public abstract class AbstractShape implements ControllableBamObject {
+public abstract class BaseShape implements ControllableBamObject {
     private static final float DEFAULT_DENSITY_COEFFICIENT = 1.0f;
     private static final float DEFAULT_FRICTION_COEFFICIENT = 0.7f;
     private static final float DEFAULT_RESTITUTION_COEFFICIENT = 0.5f;
@@ -33,7 +33,7 @@ public abstract class AbstractShape implements ControllableBamObject {
 
     private final FixtureDef fixture;
 
-    protected AbstractShape(Body body, FixtureDef fixture, ReadableColor color) {
+    protected BaseShape(Body body, FixtureDef fixture, ReadableColor color) {
         this.color = color;
         this.body = body;
         this.fixture = fixture;

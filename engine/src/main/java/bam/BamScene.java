@@ -1,8 +1,9 @@
 package bam;
 
-import bam.opengl.OpenGlConfiguration;
-import bam.opengl.OpenGlPlane2dDisplay;
-import bam.shape.model.base.AbstractShape;
+import bam.display.Displayable;
+import bam.display.DisplayConfiguration;
+import bam.display.opengl.OpenGlDisplay;
+import bam.shape.model.base.BaseShape;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -19,38 +20,29 @@ public class BamScene {
     private static final int POSITION_ITERATIONS = 10;
 
     private final World world;
-    private final List<AbstractShape> shapes = new ArrayList<>();
+    private final List<BaseShape> shapes = new ArrayList<>();
     private final StopWatch stopWatch = new StopWatch();
-    private final OpenGlConfiguration configuration;
-    private final OpenGlPlane2dDisplay openGlPlane2dDisplay;
+    private final Displayable bamDisplay;
 
     @Getter
     private final BamSceneCreator bamSceneCreator;
 
-    public BamScene(World world, OpenGlConfiguration configuration) {
-        this.configuration = configuration;
+    public BamScene(World world, DisplayConfiguration configuration) {
         this.world = world;
-        this.openGlPlane2dDisplay = new OpenGlPlane2dDisplay(configuration);
+        this.bamDisplay = new OpenGlDisplay(configuration);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
+    // TODO: rozdzielić na dwa wątki: jeden zajmuje się odświeżaniem obrazu, drugi fizyką?
     public void start() {
-        openGlPlane2dDisplay.startDisplay();
+        bamDisplay.start();
         stopWatch.getDelta();
-        while (openGlPlane2dDisplay.isDisplayEnabled()) {
+        while (bamDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            openGlPlane2dDisplay.redraw(() -> shapes.forEach(AbstractShape::draw));
+            bamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
         }
-        openGlPlane2dDisplay.closeDisplay();
-    }
-
-    public float getDisplayWidth() {
-        return configuration.getDisplayWidth();
-    }
-
-    public float getDisplayHeight() {
-        return configuration.getDisplayHeight();
+        bamDisplay.stop();
     }
 
     private void refreshWorldState() {
@@ -59,7 +51,16 @@ public class BamScene {
         world.step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
     }
 
+    public float getDisplayWidth() {
+        return bamDisplay.getDisplayWidth();
+    }
+
+    public float getDisplayHeight() {
+        return bamDisplay.getDisplayHeight();
+    }
+
 }
+
 //    @Override
 //    public void control(float freq) {
 //        float xVel = 0.0f;

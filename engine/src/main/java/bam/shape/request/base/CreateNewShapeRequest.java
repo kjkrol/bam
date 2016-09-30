@@ -1,6 +1,6 @@
 package bam.shape.request.base;
 
-import bam.shape.model.base.AbstractShape;
+import bam.shape.model.base.BaseShape;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jbox2d.dynamics.Body;
@@ -10,7 +10,7 @@ import org.lwjgl.util.ReadableColor;
 
 @RequiredArgsConstructor
 @Getter
-public abstract class CreateNewShapeRequest<T extends AbstractShape> {
+public abstract class CreateNewShapeRequest<T extends BaseShape> {
     private final FixtureDef fixtureDef;
     private final ReadableColor color;
 

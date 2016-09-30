@@ -1,8 +1,6 @@
-package bam.opengl;
+package bam.display.opengl;
 
-import bam.opengl.nativelibs.NativeLibsBinder;
-import bam.opengl.nativelibs.NativeLibsJarIntrospectSearch;
-import bam.opengl.nativelibs.NativeLibsSearch;
+import bam.display.DisplayConfiguration;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -11,22 +9,25 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
+
 @ToString
 @Slf4j
 class OpenGlSetup {
 
     @Getter
-    private final OpenGlConfiguration configuration;
+    private final DisplayConfiguration configuration;
 
-    OpenGlSetup(OpenGlConfiguration configuration) {
+    OpenGlSetup(DisplayConfiguration configuration) {
         this.configuration = configuration;
-        final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
-        final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
-        nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
-        setupDisplay();
     }
 
-    void setupGL11() {
+    void setup() {
+        setupDisplay();
+        setupGL11();
+    }
+
+    private void setupGL11() {
         log.info("setup OpenGl : starting");
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glShadeModel(GL11.GL_SMOOTH);
@@ -46,17 +47,31 @@ class OpenGlSetup {
 
     private void setupDisplay() {
         try {
-            log.info("setup Display : starting");
-            final DisplayMode mode = GLUtil.getDisplayMode(configuration.getDisplayWidth(), configuration.getDisplayHeight());
-            Display.setDisplayMode(mode);
+            log.info("setup Displayable : starting");
+            final DisplayMode displayMode = detectDisplayMode();
+            log.info("set display mode: {}", displayMode);
+            Display.setDisplayMode(displayMode);
             Display.setFullscreen(configuration.isFullscreen());
             Display.setTitle(configuration.getTitle());
-            log.info("setup Display : done");
+            log.info("setup Displayable : done");
         } catch (LWJGLException e) {
-            log.error("setup Display : error");
+            log.error("setup Displayable : error");
             log.error(e.getMessage(), e);
             System.exit(0);
         }
+    }
+
+    private DisplayMode detectDisplayMode() throws LWJGLException {
+        final int bpp = Display.getDisplayMode().getBitsPerPixel();
+        final int width = configuration.getDisplayWidth();
+        final int height = configuration.getDisplayHeight();
+        final DisplayMode[] modes = Display.getAvailableDisplayModes();
+        return Arrays.stream(modes)
+                .filter(mode -> mode.getBitsPerPixel() == bpp)
+                .filter(mode -> mode.getWidth() == width)
+                .filter(mode -> mode.getHeight() == height)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("DisplayMode no available"));
     }
 
 }

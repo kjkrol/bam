@@ -1,19 +1,17 @@
 package bam.display.opengl;
 
-import bam.display.DisplayConfiguration;
-import bam.display.Displayable;
+import bam.display.DisplayParams;
 import lombok.extern.slf4j.Slf4j;
 import nativelibs.NativeLibsBinder;
 import nativelibs.NativeLibsJarIntrospectSearch;
 import nativelibs.NativeLibsSearch;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
-public class OpenGlDisplay implements Displayable {
+public class OpenGlDisplay {
 
     private AtomicBoolean displayEnable = new AtomicBoolean();
 
@@ -25,19 +23,18 @@ public class OpenGlDisplay implements Displayable {
 
     private final float height;
 
-    public OpenGlDisplay(DisplayConfiguration configuration) {
-        fpsLimit = configuration.getFpsLimit();
-        width = configuration.getDisplayWidth();
-        height = configuration.getDisplayHeight();
-        openGlSetup = new OpenGlSetup(configuration);
+    public OpenGlDisplay(DisplayParams displayParams) {
+        fpsLimit = displayParams.getFpsLimit();
+        width = displayParams.getWidth();
+        height = displayParams.getHeight();
+        openGlSetup = new OpenGlSetup(displayParams);
     }
 
-    @Override
     public void start() {
         if (displayEnable.compareAndSet(false, true)) {
             try {
                 bindNativeLibs();
-                Display.create();
+                org.lwjgl.opengl.Display.create();
                 openGlSetup.setup();
             } catch (LWJGLException e) {
                 log.info(e.getMessage(), e);
@@ -45,14 +42,12 @@ public class OpenGlDisplay implements Displayable {
         }
     }
 
-    @Override
     public void stop() {
         if (displayEnable.get()) {
-            Display.destroy();
+            org.lwjgl.opengl.Display.destroy();
         }
     }
 
-    @Override
     public void redraw(Runnable redrawing) {
         if (displayEnable.get()) {
             // Clear The Screen And The Depth Buffer
@@ -62,22 +57,19 @@ public class OpenGlDisplay implements Displayable {
             GL11.glLoadIdentity();
             GL11.glPopMatrix();
             GL11.glFlush();
-            Display.sync(fpsLimit);
-            Display.update();
+            org.lwjgl.opengl.Display.sync(fpsLimit);
+            org.lwjgl.opengl.Display.update();
         }
     }
 
-    @Override
     public boolean isDisplayEnabled() {
-        return displayEnable.get() && !Display.isCloseRequested();
+        return displayEnable.get() && !org.lwjgl.opengl.Display.isCloseRequested();
     }
 
-    @Override
     public float getDisplayWidth() {
         return width;
     }
 
-    @Override
     public float getDisplayHeight() {
         return height;
     }

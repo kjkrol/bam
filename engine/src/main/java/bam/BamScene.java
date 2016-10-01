@@ -1,7 +1,7 @@
 package bam;
 
-import bam.display.Displayable;
-import bam.display.DisplayConfiguration;
+import bam.display.BamDisplay;
+import bam.display.DisplayParams;
 import bam.display.opengl.OpenGlDisplay;
 import bam.shape.model.base.BaseShape;
 import lombok.Getter;
@@ -22,27 +22,29 @@ public class BamScene {
     private final World world;
     private final List<BaseShape> shapes = new ArrayList<>();
     private final StopWatch stopWatch = new StopWatch();
-    private final Displayable bamDisplay;
+    private final BamDisplay bamBamDisplay;
 
     @Getter
     private final BamSceneCreator bamSceneCreator;
 
-    public BamScene(World world, DisplayConfiguration configuration) {
+    public BamScene(World world, DisplayParams displayParams) {
         this.world = world;
-        this.bamDisplay = new OpenGlDisplay(configuration);
+        this.bamBamDisplay = new BamDisplay(displayParams);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
     // TODO: rozdzielić na dwa wątki: jeden zajmuje się odświeżaniem obrazu, drugi fizyką?
+    // TODO: teraz to sie nie kompiluje, gdyz trzeba rozdzielic display mgmt od physics mgmt (osobne watki)
+    
     public void start() {
-        bamDisplay.start();
+        bamBamDisplay.start();
         stopWatch.getDelta();
-        while (bamDisplay.isDisplayEnabled()) {
+        while (bamBamDisplay.isDisplayEnabled()) {
             refreshWorldState();
 //            this.control(freq);
-            bamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
+            bamBamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
         }
-        bamDisplay.stop();
+        bamBamDisplay.stop();
     }
 
     private void refreshWorldState() {
@@ -52,11 +54,11 @@ public class BamScene {
     }
 
     public float getDisplayWidth() {
-        return bamDisplay.getDisplayWidth();
+        return bamBamDisplay.getDisplayWidth();
     }
 
     public float getDisplayHeight() {
-        return bamDisplay.getDisplayHeight();
+        return bamBamDisplay.getDisplayHeight();
     }
 
 }

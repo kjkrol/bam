@@ -6,6 +6,7 @@ import nativelibs.NativeLibsBinder;
 import nativelibs.NativeLibsJarIntrospectSearch;
 import nativelibs.NativeLibsSearch;
 import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,7 +35,7 @@ public class OpenGlDisplay {
         if (displayEnable.compareAndSet(false, true)) {
             try {
                 bindNativeLibs();
-                org.lwjgl.opengl.Display.create();
+                Display.create();
                 openGlSetup.setup();
             } catch (LWJGLException e) {
                 log.info(e.getMessage(), e);
@@ -44,7 +45,7 @@ public class OpenGlDisplay {
 
     public void stop() {
         if (displayEnable.get()) {
-            org.lwjgl.opengl.Display.destroy();
+            Display.destroy();
         }
     }
 
@@ -57,13 +58,13 @@ public class OpenGlDisplay {
             GL11.glLoadIdentity();
             GL11.glPopMatrix();
             GL11.glFlush();
-            org.lwjgl.opengl.Display.sync(fpsLimit);
-            org.lwjgl.opengl.Display.update();
+            Display.sync(fpsLimit);
+            Display.update();
         }
     }
 
     public boolean isDisplayEnabled() {
-        return displayEnable.get() && !org.lwjgl.opengl.Display.isCloseRequested();
+        return displayEnable.get() && !Display.isCloseRequested();
     }
 
     public float getDisplayWidth() {

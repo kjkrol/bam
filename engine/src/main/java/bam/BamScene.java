@@ -2,15 +2,15 @@ package bam;
 
 import bam.display.BamDisplay;
 import bam.display.DisplayParams;
-import bam.display.opengl.OpenGlDisplay;
 import bam.shape.model.base.BaseShape;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jbox2d.dynamics.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Executors;
 
 @ToString
 @Slf4j
@@ -20,31 +20,28 @@ public class BamScene {
     private static final int POSITION_ITERATIONS = 10;
 
     private final World world;
-    private final List<BaseShape> shapes = new ArrayList<>();
+    private final Set<BaseShape> shapes = new HashSet<>();
     private final StopWatch stopWatch = new StopWatch();
-    private final BamDisplay bamBamDisplay;
+    private final BamDisplay bamDisplay;
 
     @Getter
     private final BamSceneCreator bamSceneCreator;
 
     public BamScene(World world, DisplayParams displayParams) {
         this.world = world;
-        this.bamBamDisplay = new BamDisplay(displayParams);
+        this.bamDisplay = new BamDisplay(displayParams);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
     // TODO: rozdzielić na dwa wątki: jeden zajmuje się odświeżaniem obrazu, drugi fizyką?
     // TODO: teraz to sie nie kompiluje, gdyz trzeba rozdzielic display mgmt od physics mgmt (osobne watki)
-    
+
     public void start() {
-        bamBamDisplay.start();
-        stopWatch.getDelta();
-        while (bamBamDisplay.isDisplayEnabled()) {
-            refreshWorldState();
-//            this.control(freq);
-            bamBamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
+        refreshWorldState();
+        bamDisplay.run(shapes);
+        while (true) {
+            Executors.newSingleThreadExecutor().submit(() -> refreshWorldState());
         }
-        bamBamDisplay.stop();
     }
 
     private void refreshWorldState() {
@@ -54,11 +51,11 @@ public class BamScene {
     }
 
     public float getDisplayWidth() {
-        return bamBamDisplay.getDisplayWidth();
+        return bamDisplay.getDisplayWidth();
     }
 
     public float getDisplayHeight() {
-        return bamBamDisplay.getDisplayHeight();
+        return bamDisplay.getDisplayHeight();
     }
 
 }

@@ -14,7 +14,7 @@ public class WorldConfig {
 
     @Bean
     World world() {
-        final Vec2 gravity = new Vec2(0.0f, -100.0f);
+        final Vec2 gravity = new Vec2(0.0f, -9.8f);
         final World world = new World(gravity);
         world.setContactListener(new ContactListener() {
             @Override

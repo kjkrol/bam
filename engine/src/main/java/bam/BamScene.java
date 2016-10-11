@@ -1,54 +1,37 @@
 package bam;
 
-import bam.display.Displayable;
-import bam.display.DisplayConfiguration;
-import bam.display.opengl.OpenGlDisplay;
+import bam.display.BamDisplay;
+import bam.display.DisplayParams;
+import bam.physics.BamPhysics;
 import bam.shape.model.base.BaseShape;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.jbox2d.dynamics.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @ToString
 @Slf4j
 public class BamScene {
-    private static final float TIME_AMOUNT_FACTOR = 0.001f;
-    private static final int VELOCITY_ITERATIONS = 10;
-    private static final int POSITION_ITERATIONS = 10;
 
-    private final World world;
-    private final List<BaseShape> shapes = new ArrayList<>();
-    private final StopWatch stopWatch = new StopWatch();
-    private final Displayable bamDisplay;
+    private final Set<BaseShape> shapes = new HashSet<>();
+    private final BamDisplay bamDisplay;
+    private final BamPhysics bamPhysics;
 
     @Getter
     private final BamSceneCreator bamSceneCreator;
 
-    public BamScene(World world, DisplayConfiguration configuration) {
-        this.world = world;
-        this.bamDisplay = new OpenGlDisplay(configuration);
+    public BamScene(World world, DisplayParams displayParams) {
+        this.bamPhysics = new BamPhysics(world);
+        this.bamDisplay = new BamDisplay(displayParams);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 
-    // TODO: rozdzielić na dwa wątki: jeden zajmuje się odświeżaniem obrazu, drugi fizyką?
     public void start() {
-        bamDisplay.start();
-        stopWatch.getDelta();
-        while (bamDisplay.isDisplayEnabled()) {
-            refreshWorldState();
-//            this.control(freq);
-            bamDisplay.redraw(() -> shapes.forEach(BaseShape::draw));
-        }
-        bamDisplay.stop();
-    }
-
-    private void refreshWorldState() {
-        final int delta = stopWatch.getDelta();
-        final float freq = delta * TIME_AMOUNT_FACTOR;
-        world.step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        bamPhysics.start();
+        bamDisplay.start(() -> shapes.forEach(BaseShape::draw));
     }
 
     public float getDisplayWidth() {

@@ -1,6 +1,6 @@
 package bam.display.opengl;
 
-import bam.display.DisplayConfiguration;
+import bam.display.DisplayParams;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +16,9 @@ import java.util.Arrays;
 class OpenGlSetup {
 
     @Getter
-    private final DisplayConfiguration configuration;
+    private final DisplayParams configuration;
 
-    OpenGlSetup(DisplayConfiguration configuration) {
+    OpenGlSetup(DisplayParams configuration) {
         this.configuration = configuration;
     }
 
@@ -37,7 +37,7 @@ class OpenGlSetup {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        GL11.glOrtho(0, configuration.getDisplayWidth(), 0, configuration.getDisplayHeight(), 1, -1);
+        GL11.glOrtho(0, configuration.getWidth(), 0, configuration.getHeight(), 1, -1);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GL11.glClearDepth(1);
@@ -47,15 +47,15 @@ class OpenGlSetup {
 
     private void setupDisplay() {
         try {
-            log.info("setup Displayable : starting");
+            log.info("setup BamDisplay : starting");
             final DisplayMode displayMode = detectDisplayMode();
             log.info("set display mode: {}", displayMode);
             Display.setDisplayMode(displayMode);
             Display.setFullscreen(configuration.isFullscreen());
             Display.setTitle(configuration.getTitle());
-            log.info("setup Displayable : done");
+            log.info("setup BamDisplay : done");
         } catch (LWJGLException e) {
-            log.error("setup Displayable : error");
+            log.error("setup BamDisplay : error");
             log.error(e.getMessage(), e);
             System.exit(0);
         }
@@ -63,8 +63,8 @@ class OpenGlSetup {
 
     private DisplayMode detectDisplayMode() throws LWJGLException {
         final int bpp = Display.getDisplayMode().getBitsPerPixel();
-        final int width = configuration.getDisplayWidth();
-        final int height = configuration.getDisplayHeight();
+        final int width = configuration.getWidth();
+        final int height = configuration.getHeight();
         final DisplayMode[] modes = Display.getAvailableDisplayModes();
         return Arrays.stream(modes)
                 .filter(mode -> mode.getBitsPerPixel() == bpp)

@@ -3,27 +3,49 @@ package nativelibs;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toSet;
 
 @FunctionalInterface
 public interface NativeLibsSearch {
 
     String ROOT_LIB_DIR = "libs/native";
 
-    default Stream<Path> getNativeLibraries() {
-        return new NativeLibsSearch.SystemNameScanner().getSystemName().map(osName -> {
-            String osArch = new NativeLibsSearch.SystemArchScanner().getSystemArch();
+    default Set<Path> getNativeLibraries() {
+        return new SystemNameScanner().getSystemName().map(osName -> {
+            String osArch = new SystemArchScanner().getSystemArch();
             Path targetPath = Paths.get(ROOT_LIB_DIR, osName, osArch);
             return scan(targetPath);
-        }).orElseGet(Stream::empty);
+        }).orElseGet(Collections::emptySet);
     }
 
-    Stream<Path> scan(final Path targetPath);
+    @SuppressWarnings("unchecked")
+    default Set<Path> scan(Path targetPath) {
+        return (Set<Path>) transform(targetPath)
+                .map(path -> {
+                    try {
+                        return Files.walk(path.toAbsolutePath(), 1)
+                                .filter(Path::isAbsolute)
+                                .collect(toSet());
+                    } catch (IOException e) {
+                        return Collections.emptySet();
+                    }
+                })
+                .orElseThrow(() -> new RuntimeException("Can not scan given path."));
+
+    }
+
+    Optional<Path> transform(Path targetPath);
+
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class SystemNameScanner {

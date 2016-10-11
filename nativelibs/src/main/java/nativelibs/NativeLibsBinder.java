@@ -9,12 +9,12 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Stream;
+import java.util.Set;
 
 @Slf4j
 public class NativeLibsBinder {
 
-    public void bindLibs(Stream<Path> paths) {
+    public void bindLibs(Set<Path> paths) {
         final JavaTemporaryDirectory javaTemporaryDirectory = new JavaTemporaryDirectory();
         if (javaTemporaryDirectory.isTempDirectoryExist()) {
             final String javaTemporaryDir = javaTemporaryDirectory.getJavaTempDirectory().toString();

@@ -1,30 +1,30 @@
 package bam.display;
 
 import bam.display.opengl.OpenGlDisplay;
-import bam.shape.model.base.BaseShape;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-//TODO: ta klasa powinna działać w osobnym watku i dostawac polecenia poprzez kolejke komunikatow
-//TODO: ta klasa powinna miec lepsza nazwe
-//TODO: ta klasa powinna w calosci przejac odpowiedzialnosc za kontrolę prezentacji grafiki
 @Slf4j
 public class BamDisplay {
 
+    private static final int DISPLAY_START_DELAY_TIME_IN_MS = 50;
+    private static final int DISPLAY_REFRESH_TIME_IN_MS = 20;
+
     private final OpenGlDisplay openGlDisplay;
+
+    private final ScheduledExecutorService displayEngineScheduler = Executors.newSingleThreadScheduledExecutor();
 
     public BamDisplay(DisplayParams displayParams) {
         this.openGlDisplay = new OpenGlDisplay(displayParams);
     }
 
-    public void start() {
-        openGlDisplay.init();
-        openGlDisplay.draw(() -> { });
-    }
-
-    public void refresh(Set<BaseShape> shapes) {
-        openGlDisplay.draw(() -> shapes.forEach(BaseShape::draw));
+    public void start(Runnable redrawing) {
+        displayEngineScheduler.submit(() -> openGlDisplay.init());
+        displayEngineScheduler.scheduleAtFixedRate(() -> openGlDisplay.draw(redrawing),
+                DISPLAY_START_DELAY_TIME_IN_MS, DISPLAY_REFRESH_TIME_IN_MS, TimeUnit.MILLISECONDS);
     }
 
     public float getDisplayWidth() {

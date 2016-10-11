@@ -9,6 +9,11 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.ProviderNotFoundException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
@@ -32,11 +37,12 @@ public class OpenGlDisplay {
     }
 
     public void init() {
-        if (displayEnable.compareAndSet(false, true)) {
+        if (!displayEnable.get()) {
             try {
                 bindNativeLibs();
                 Display.create();
                 openGlSetup.setup();
+                displayEnable.set(true);
             } catch (LWJGLException e) {
                 log.info(e.getMessage(), e);
             }
@@ -76,8 +82,15 @@ public class OpenGlDisplay {
     }
 
     private void bindNativeLibs() {
-        final NativeLibsBinder nativeLibsBinder = new NativeLibsBinder();
-        final NativeLibsSearch nativeLibsSearch = new NativeLibsJarIntrospectSearch();
-        nativeLibsBinder.bindLibs(nativeLibsSearch.getNativeLibraries());
+        Set<Path> pathStream;
+        try {
+            pathStream = new NativeLibsJarIntrospectSearch().getNativeLibraries();
+        } catch (ProviderNotFoundException e) {
+            log.error(e.getMessage());
+            final NativeLibsSearch nativeLibsIDEItrospectorSearch = targetPath ->
+                    Optional.of(new File("engine/src/main/resources/" + targetPath.toString()).toPath());
+            pathStream = nativeLibsIDEItrospectorSearch.getNativeLibraries();
+        }
+        new NativeLibsBinder().bindLibs(pathStream);
     }
 }

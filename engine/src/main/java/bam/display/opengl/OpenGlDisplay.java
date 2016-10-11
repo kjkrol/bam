@@ -10,8 +10,10 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.ProviderNotFoundException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -87,10 +89,21 @@ public class OpenGlDisplay {
             pathStream = new NativeLibsJarIntrospectSearch().getNativeLibraries();
         } catch (ProviderNotFoundException e) {
             log.error(e.getMessage());
-            final NativeLibsSearch nativeLibsIDEItrospectorSearch = targetPath ->
-                    Optional.of(new File("engine/src/main/resources/" + targetPath.toString()).toPath());
-            pathStream = nativeLibsIDEItrospectorSearch.getNativeLibraries();
+            pathStream = new NativeLibsIDEIntrospectSearch().getNativeLibraries();
         }
         new NativeLibsBinder().bindLibs(pathStream);
+    }
+
+    private class NativeLibsIDEIntrospectSearch implements  NativeLibsSearch {
+
+        @Override
+        public Optional<Path> transform(Path targetPath) {
+            final URL dirURL = OpenGlDisplay.class.getClassLoader().getResource(targetPath.toString());
+            if (Objects.nonNull(dirURL)) {
+                String dirName = dirURL.getFile();
+                return Optional.of(new File(dirName).toPath());
+            }
+            return Optional.empty();
+        }
     }
 }

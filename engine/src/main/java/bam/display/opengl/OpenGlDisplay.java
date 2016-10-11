@@ -31,7 +31,7 @@ public class OpenGlDisplay {
         openGlSetup = new OpenGlSetup(displayParams);
     }
 
-    public void start() {
+    public void init() {
         if (displayEnable.compareAndSet(false, true)) {
             try {
                 bindNativeLibs();
@@ -43,13 +43,13 @@ public class OpenGlDisplay {
         }
     }
 
-    public void stop() {
+    public void destroy() {
         if (displayEnable.get()) {
             Display.destroy();
         }
     }
 
-    public void redraw(Runnable redrawing) {
+    public void draw(Runnable redrawing) {
         if (displayEnable.get()) {
             // Clear The Screen And The Depth Buffer
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);

@@ -10,14 +10,17 @@ import org.jbox2d.dynamics.World;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @ToString
 @Slf4j
 public class BamScene {
-    private static final float TIME_AMOUNT_FACTOR = 0.001f;
-    private static final int VELOCITY_ITERATIONS = 10;
-    private static final int POSITION_ITERATIONS = 10;
+    private static final float ADVANCE_SIMULATION_BY_TIME_IN_SECONDS = 1 / 20f;
+    private static final int HOW_STRONGLY_TO_CORRECT_VELOCITY = 8;
+    private static final int HOW_STRONGLY_TO_CORRECT_POSITION = 13;
+
+    private static final int EVERY_TENTH = 10;
 
     private final World world;
     private final Set<BaseShape> shapes = new HashSet<>();
@@ -37,17 +40,22 @@ public class BamScene {
     // TODO: teraz to sie nie kompiluje, gdyz trzeba rozdzielic display mgmt od physics mgmt (osobne watki)
 
     public void start() {
+        final ExecutorService es1 = Executors.newSingleThreadExecutor();
+        final ExecutorService es2 = Executors.newSingleThreadExecutor();
         refreshWorldState();
-        bamDisplay.run(shapes);
-        while (true) {
-            Executors.newSingleThreadExecutor().submit(() -> refreshWorldState());
+        es2.submit(() -> bamDisplay.start()).isDone();
+        for (int i = 0;; ++i) {
+            es1.submit(this::refreshWorldState);
+            if (i % EVERY_TENTH == 0) {
+                es2.submit(() -> bamDisplay.refresh(shapes));
+            }
         }
     }
 
     private void refreshWorldState() {
         final int delta = stopWatch.getDelta();
-        final float freq = delta * TIME_AMOUNT_FACTOR;
-        world.step(freq, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+//        final float freq = delta * ADVANCE_SIMULATION_BY_TIME_IN_SECONDS;
+        world.step(ADVANCE_SIMULATION_BY_TIME_IN_SECONDS, HOW_STRONGLY_TO_CORRECT_VELOCITY, HOW_STRONGLY_TO_CORRECT_POSITION);
     }
 
     public float getDisplayWidth() {

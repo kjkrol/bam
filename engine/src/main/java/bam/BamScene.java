@@ -25,7 +25,7 @@ public class BamScene {
 
     public BamScene(World world, DisplayParams displayParams) {
         this.bamPhysics = new BamPhysics(world);
-        this.bamDisplay = new BamDisplay(displayParams);
+        this.bamDisplay = new BamDisplay(displayParams, bamPhysics::close);
         this.bamSceneCreator = new BamSceneCreator(shapes::add, world::createBody);
     }
 

@@ -52,9 +52,7 @@ public class OpenGlDisplay {
     }
 
     public void destroy() {
-        if (displayEnable.get()) {
-            Display.destroy();
-        }
+        Display.destroy();
     }
 
     public void draw(Runnable redrawing) {
@@ -94,7 +92,7 @@ public class OpenGlDisplay {
         new NativeLibsBinder().bindLibs(pathStream);
     }
 
-    private class NativeLibsIDEIntrospectSearch implements  NativeLibsSearch {
+    private class NativeLibsIDEIntrospectSearch implements NativeLibsSearch {
 
         @Override
         public Optional<Path> transform(Path targetPath) {

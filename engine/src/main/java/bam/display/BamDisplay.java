@@ -17,14 +17,33 @@ public class BamDisplay {
 
     private final ScheduledExecutorService displayEngineScheduler = Executors.newSingleThreadScheduledExecutor();
 
-    public BamDisplay(DisplayParams displayParams) {
+    private Runnable cleanup;
+
+    public BamDisplay(DisplayParams displayParams, Runnable cleanup) {
         this.openGlDisplay = new OpenGlDisplay(displayParams);
+        this.cleanup = cleanup;
     }
 
     public void start(Runnable redrawing) {
-        displayEngineScheduler.submit(() -> openGlDisplay.init());
-        displayEngineScheduler.scheduleAtFixedRate(() -> openGlDisplay.draw(redrawing),
-                DISPLAY_START_DELAY_TIME_IN_MS, DISPLAY_REFRESH_TIME_IN_MS, TimeUnit.MILLISECONDS);
+        displayEngineScheduler.submit(openGlDisplay::init);
+        displayEngineScheduler.scheduleAtFixedRate(() -> {
+            if (openGlDisplay.isDisplayEnabled()) {
+                openGlDisplay.draw(redrawing);
+            } else {
+                close();
+            }
+        }, DISPLAY_START_DELAY_TIME_IN_MS, DISPLAY_REFRESH_TIME_IN_MS, TimeUnit.MILLISECONDS);
+
+    }
+
+    public void close() {
+        openGlDisplay.destroy();
+        displayEngineScheduler.shutdown();
+        cleanup.run();
+    }
+
+    public boolean isWorking() {
+        return !displayEngineScheduler.isShutdown();
     }
 
     public float getDisplayWidth() {

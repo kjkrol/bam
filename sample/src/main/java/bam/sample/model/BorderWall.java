@@ -29,18 +29,18 @@ public class BorderWall {
 
         bamScene.getBamSceneCreator().addShape(
                 new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, borderWidth, breadth),
-                new Vec2(0, borderWidth),
+                new Vec2(0, borderHeight),
                 BodyType.STATIC);
         bamScene.getBamSceneCreator().addShape(
                 new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, borderWidth, breadth),
                 new Vec2(0, 0),
                 BodyType.STATIC);
         bamScene.getBamSceneCreator().addShape(
-                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderWidth),
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderHeight),
                 new Vec2(0, 0),
                 BodyType.STATIC);
         bamScene.getBamSceneCreator().addShape(
-                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderWidth),
+                new CreateNewRectangleRequest(fixtureDef, ReadableColor.YELLOW, breadth, borderHeight),
                 new Vec2(borderWidth, 0),
                 BodyType.STATIC);
     }

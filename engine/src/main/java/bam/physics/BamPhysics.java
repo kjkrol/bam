@@ -29,5 +29,15 @@ public class BamPhysics {
                         HOW_STRONGLY_TO_CORRECT_VELOCITY,
                         HOW_STRONGLY_TO_CORRECT_POSITION),
                 PHYSICS_START_DELAY_TIME_IN_MS, PHYSICS_REFRESH_TIME_IN_MS, TimeUnit.MILLISECONDS);
+
+
+    }
+
+    public void close() {
+        physicsEngineScheduler.shutdown();
+    }
+
+    public boolean isWorking() {
+        return !physicsEngineScheduler.isShutdown();
     }
 }

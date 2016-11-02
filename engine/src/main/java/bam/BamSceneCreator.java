@@ -1,7 +1,7 @@
 package bam;
 
-import bam.shape.model.base.BaseShape;
-import bam.shape.request.base.CreateNewShapeRequest;
+import bam.model.shape.base.BaseShape;
+import bam.model.request.base.CreateNewShapeRequest;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;

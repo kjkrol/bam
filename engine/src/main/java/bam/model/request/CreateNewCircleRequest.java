@@ -1,7 +1,7 @@
-package bam.shape.request;
+package bam.model.request;
 
-import bam.shape.model.Circle;
-import bam.shape.request.base.CreateNewShapeRequest;
+import bam.model.shape.Circle;
+import bam.model.request.base.CreateNewShapeRequest;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.FixtureDef;
 import org.lwjgl.util.ReadableColor;

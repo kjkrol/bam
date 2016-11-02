@@ -1,6 +1,6 @@
-package bam.shape.model;
+package bam.model.shape;
 
-import bam.shape.model.base.BaseShape;
+import bam.model.shape.base.BaseShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
@@ -23,8 +23,8 @@ public class Circle extends BaseShape {
     private final float[] tx;
     private final float[] ty;
 
-    public Circle(Body body, FixtureDef fixtureDef, ReadableColor color, float radius) {
-        super(body, fixtureDef, color);
+    public Circle(Body body, FixtureDef fixtureDef, float radius) {
+        super(body, fixtureDef);
         this.radius = radius;
         int initEdges = (int) (radius / FACTOR_FOUR);
         this.numberOfEdges = initEdges < MINIMUM_EDGES_NUMBER ? MINIMUM_EDGES_NUMBER : initEdges;
@@ -33,38 +33,6 @@ public class Circle extends BaseShape {
         this.tx = new float[numberOfEdges];
         this.ty = new float[numberOfEdges];
         this.init();
-    }
-
-    @Override
-    protected void drawShape() {
-
-        GL11.glPointSize(FACTOR_FOUR);
-        GL11.glBegin(GL11.GL_POINTS);
-        GL11.glVertex2f(0, 0);
-        GL11.glVertex2f(0, radius);
-        GL11.glEnd();
-
-        GL11.glBegin(GL11.GL_LINE_LOOP);
-        GL11.glVertex2f(0, 0);
-        GL11.glVertex2f(0, radius);
-        GL11.glEnd();
-
-        GL11.glBegin(GL11.GL_LINE_LOOP);
-        for (int index = 0; index < numberOfEdges; ++index) {
-            GL11.glVertex2f(x[index], y[index]);
-        }
-        GL11.glEnd();
-
-        final ReadableColor color = getColor();
-        GL11.glBegin(GL11.GL_POLYGON);
-        if (nonNull(color)) {
-            GL11.glColor4f(color.getRed(), color.getGreen(), color.getBlue(), HALF);
-        }
-        for (int index = 0; index < numberOfEdges; ++index) {
-            GL11.glVertex2f(x[index], y[index]);
-        }
-
-        GL11.glEnd();
     }
 
     @Override

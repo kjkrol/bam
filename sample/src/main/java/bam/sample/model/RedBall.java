@@ -1,8 +1,8 @@
 package bam.sample.model;
 
 import bam.BamScene;
-import bam.shape.model.Circle;
-import bam.shape.request.CreateNewCircleRequest;
+import bam.model.shape.Circle;
+import bam.model.request.CreateNewCircleRequest;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.lwjgl.util.ReadableColor;

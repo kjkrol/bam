@@ -1,25 +1,21 @@
-package bam.shape.model;
+package bam.display.opengl.shape;
 
-import bam.shape.model.base.BaseShape;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.collision.shapes.Shape;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.FixtureDef;
+import bam.display.opengl.shape.base.BaseOpenGlShape;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.ReadableColor;
 
 import static java.util.Objects.nonNull;
 
-public class Rectangle extends BaseShape {
+public class RectangleOQL extends BaseOpenGlShape {
+
     private static final float HALF = 0.5f;
     private final float width;
     private final float height;
 
-    public Rectangle(Body body, FixtureDef fixtureDef, ReadableColor color, float width, float height) {
-        super(body, fixtureDef, color);
+    protected RectangleOQL(ReadableColor color, float width, float height) {
+        super(color);
         this.width = width;
         this.height = height;
-        init();
     }
 
     @Override
@@ -40,12 +36,5 @@ public class Rectangle extends BaseShape {
         GL11.glVertex2f(+width, +height);
         GL11.glVertex2f(-width, +height);
         GL11.glEnd();
-    }
-
-    @Override
-    protected Shape createShape() {
-        final PolygonShape boxShape = new PolygonShape();
-        boxShape.setAsBox(width, height);
-        return boxShape;
     }
 }

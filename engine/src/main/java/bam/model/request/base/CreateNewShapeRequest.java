@@ -1,6 +1,6 @@
-package bam.shape.request.base;
+package bam.model.request.base;
 
-import bam.shape.model.base.BaseShape;
+import bam.model.shape.base.BaseShape;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.jbox2d.dynamics.Body;

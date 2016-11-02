@@ -1,7 +1,7 @@
 package bam.sample.model;
 
 import bam.BamScene;
-import bam.shape.request.CreateNewRectangleRequest;
+import bam.model.request.CreateNewRectangleRequest;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;

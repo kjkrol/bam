@@ -1,4 +1,4 @@
-package bam.shape.model.base;
+package bam.model.shape.base;
 
 import bam.ControllableBamObject;
 import lombok.Getter;
@@ -22,19 +22,12 @@ public abstract class BaseShape implements ControllableBamObject {
         DEFAULT_FIXTURE_DEF.restitution = DEFAULT_RESTITUTION_COEFFICIENT;
     }
 
-    private static final float PI_RAD = 180f;
-    private static final float ANGLE_TO_RAD_COEFFICIENT = (float) (PI_RAD / Math.PI);
-
     @Getter
     private final Body body;
 
-    @Getter
-    private final ReadableColor color;
-
     private final FixtureDef fixture;
 
-    protected BaseShape(Body body, FixtureDef fixture, ReadableColor color) {
-        this.color = color;
+    protected BaseShape(Body body, FixtureDef fixture) {
         this.body = body;
         this.fixture = fixture;
     }
@@ -44,19 +37,6 @@ public abstract class BaseShape implements ControllableBamObject {
         final FixtureDef fixtureDef = createFixtureDef(shape, fixture);
         body.createFixture(fixtureDef);
     }
-
-    public void draw() {
-        GL11.glLoadIdentity();
-        GL11.glTranslatef(getXPos(), getYPos(), 0);
-        final float angle = body.getAngle() * ANGLE_TO_RAD_COEFFICIENT;
-        GL11.glRotatef(angle, 0, 0, 1);
-        ReadableColor color1 = nonNull(color) ? color : ReadableColor.WHITE;
-        GL11.glColor3f(color1.getRed(), color1.getGreen(), color1.getBlue());
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        this.drawShape();
-    }
-
-    protected abstract void drawShape();
 
     protected abstract Shape createShape();
 

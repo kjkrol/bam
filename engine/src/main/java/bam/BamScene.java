@@ -3,7 +3,7 @@ package bam;
 import bam.display.BamDisplay;
 import bam.display.DisplayParams;
 import bam.physics.BamPhysics;
-import bam.shape.model.base.BaseShape;
+import bam.model.shape.base.BaseShape;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
